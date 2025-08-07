@@ -1,0 +1,26 @@
+{
+  "name": "digital-agency",
+  "private": true,
+  "type": "module",
+  "description": "Digital Marketing Agency Website",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "nuxt": "^3.12.4",
+    "vue": "^3.4.38",
+    "vue-router": "^4.4.3",
+    "@prisma/client": "^5.7.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "@vueuse/nuxt": "^10.5.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "prisma": "^5.7.1"
+  }
+}

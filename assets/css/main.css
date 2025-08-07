@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles inspired by Unicronet design */
+:root {
+  --primary-color: #6495ed;
+  --primary-dark: #4169e1;
+  --primary-light: #87ceeb;
+  --primary-very-light: #e6f3ff;
+  --primary-shadow: rgba(100, 149, 237, 0.2);
+  --text-dark: #2d3748;
+  --text-light: #718096;
+  --bg-light: #f7fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+}
+
+.btn-primary {
+  @apply text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+  background-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-secondary {
+  @apply bg-transparent border-2 font-medium py-3 px-6 rounded-lg transition-all duration-300;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--primary-color);
+  @apply text-white;
+}
+
+.card {
+  @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1;
+}
+
+.floating-label {
+  @apply absolute left-3 top-0 px-2 bg-white text-gray-500 text-sm transform -translate-y-1/2 transition-all duration-200 pointer-events-none z-10;
+}
+
+.form-input {
+  @apply w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-all duration-200;
+}
+
+.form-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-shadow);
+}
+
+.form-input:focus + .floating-label,
+.form-input:not(:placeholder-shown) + .floating-label {
+  @apply font-medium;
+  color: var(--primary-color);
+}
+
+.form-input:not(:focus):placeholder-shown + .floating-label {
+  @apply top-1/2 left-3 px-0 bg-transparent text-gray-400 font-normal transform -translate-y-1/2 scale-100;
+}
+
+/* Special handling for textareas */
+textarea.form-input:not(:focus):placeholder-shown + .floating-label {
+  @apply top-4 left-3 px-0 bg-transparent text-gray-400 font-normal transform translate-y-0 scale-100;
+}
+
+/* Ensure label stays on border for textareas when focused or filled */
+textarea.form-input:focus + .floating-label,
+textarea.form-input:not(:placeholder-shown) + .floating-label {
+  @apply top-0 px-2 bg-white font-medium transform -translate-y-1/2;
+  color: var(--primary-color);
+}
+
+/* Input container positioning */
+.relative {
+  position: relative;
+}
+
+/* Ensure proper spacing for hint text */
+.form-input + .floating-label + p,
+.form-input + .floating-label ~ p {
+  @apply mt-2;
+}
+
+/* Special spacing for small hint text */
+.form-input + .floating-label + p.text-xs {
+  @apply mt-1;
+}
+
+/* Fix label z-index to appear above hint text */
+.form-input:focus + .floating-label,
+.form-input:not(:placeholder-shown) + .floating-label,
+textarea.form-input:focus + .floating-label,
+textarea.form-input:not(:placeholder-shown) + .floating-label {
+  @apply z-20;
+  color: var(--primary-color);
+}
+
+.section-padding {
+  @apply py-16 lg:py-24;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Gradient backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Dynamic primary color utilities */
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-primary-dark {
+  color: var(--primary-dark);
+}
+
+.bg-primary {
+  background-color: var(--primary-color);
+}
+
+.bg-primary-dark {
+  background-color: var(--primary-dark);
+}
+
+.bg-primary-light {
+  background-color: var(--primary-light);
+}
+
+.bg-primary-very-light {
+  background-color: var(--primary-very-light);
+}
+
+.border-primary {
+  border-color: var(--primary-color);
+}
+
+.hover\:text-primary:hover {
+  color: var(--primary-color);
+}
+
+.hover\:bg-primary:hover {
+  background-color: var(--primary-color);
+}
+
+.hover\:bg-primary-dark:hover {
+  background-color: var(--primary-dark);
+}

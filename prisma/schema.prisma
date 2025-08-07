@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URI")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN")
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HomeContent {
+  id                    String @id @default(auto()) @map("_id") @db.ObjectId
+  heroTitle             String
+  heroSubtitle          String
+  heroImage             String?
+  ctaText               String
+  ctaButtonText         String
+  aboutTitle            String
+  aboutDescription      String
+  aboutImage            String?
+  peopleTitle           String @default("Meet Our People")
+  peopleDescription     String @default("Get to know the talented individuals who drive our success and make exceptional results possible")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Service {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  icon        String
+  image       String?
+  features    String // JSON string
+  color       String @default("#6495ed")
+  isActive    Boolean @default(true)
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AboutContent {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  missionTitle    String
+  missionText     String
+  visionTitle     String
+  visionText      String
+  valuesTitle     String
+  valuesText      String
+  teamTitle       String
+  teamDescription String
+  historyTitle    String
+  historyText     String
+  bannerImage     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TeamMember {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  position    String
+  description String
+  image       String?
+  email       String?
+  linkedin    String?
+  twitter     String?
+  isActive    Boolean @default(true)
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactContent {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  subtitle        String
+  phone           String
+  email           String
+  address         String
+  businessHours   String // JSON string
+  mapEmbedUrl     String?
+  bannerImage     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model FAQ {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  question  String
+  answer    String
+  isActive  Boolean @default(true)
+  order     Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSettings {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  siteName        String
+  siteTagline     String
+  logo            String?
+  favicon         String?
+  primaryColor    String @default("#6495ed")
+  socialLinks     String // JSON string
+  metaDescription String?
+  keywords        String?
+  contactEmail    String?
+  contactPhone    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
