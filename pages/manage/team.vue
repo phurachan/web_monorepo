@@ -272,6 +272,8 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   middleware: 'auth',
   layout: false
@@ -310,7 +312,7 @@ onMounted(async () => {
 
 const loadTeamMembers = async () => {
   try {
-    const data = await $fetch('/api/cms/team')
+    const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.GET))
     teamMembers.value = data
   } catch (error) {
     errorMessage.value = 'Failed to load team members'
@@ -376,13 +378,13 @@ const saveMember = async () => {
     }
 
     if (editingMember.value) {
-      await $fetch(`/api/cms/team/${editingMember.value.id}`, {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.PUT(editingMember.value.id)), {
         method: 'PUT',
         body: memberData
       })
       successMessage.value = 'Person updated successfully!'
     } else {
-      await $fetch('/api/cms/team', {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.POST), {
         method: 'POST',
         body: memberData
       })
@@ -400,7 +402,7 @@ const saveMember = async () => {
 
 const toggleMemberStatus = async (member) => {
   try {
-    await $fetch(`/api/cms/team/${member.id}`, {
+    await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.PUT(member.id)), {
       method: 'PUT',
       body: {
         ...member,
@@ -418,7 +420,7 @@ const toggleMemberStatus = async (member) => {
 const deleteMember = async (member) => {
   if (confirm(`Are you sure you want to delete "${member.name}"?`)) {
     try {
-      await $fetch(`/api/cms/team/${member.id}`, {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.DELETE(member.id)), {
         method: 'DELETE'
       })
       

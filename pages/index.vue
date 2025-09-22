@@ -485,7 +485,7 @@
 
 <script setup>
 const { getHomeContent, getServices, getSiteSettings, getTeamMembers } = useCMS()
-const { t, initLanguage } = useI18n()
+const { t, initLanguage, currentLanguage } = useI18n()
 
 // Initialize language system
 onMounted(() => {
@@ -493,10 +493,51 @@ onMounted(() => {
 })
 
 // Load CMS content
-const homeContent = await getHomeContent()
+const homeContentRaw = await getHomeContent()
 const services = await getServices()
 const siteSettings = await getSiteSettings()
 const teamMembers = await getTeamMembers()
+
+// Helper function to get language-specific content
+const getLocalizedContent = (field, fallback = '') => {
+  try {
+    if (typeof field === 'string') {
+      const parsed = JSON.parse(field)
+      return parsed[currentLanguage.value] || parsed.en || fallback
+    }
+    return field || fallback
+  } catch {
+    return field || fallback
+  }
+}
+
+// Create reactive localized content
+const homeContent = computed(() => ({
+  // Basic fields that are not multilingual
+  heroImage: homeContentRaw.heroImage,
+  featureImage: homeContentRaw.featureImage,
+  
+  // Multi-language text fields
+  heroTitle: getLocalizedContent(homeContentRaw.heroTitle, 'Elevate Your Digital Presence'),
+  heroSubtitle: getLocalizedContent(homeContentRaw.heroSubtitle, 'Transform your business with our comprehensive digital marketing solutions'),
+  ctaButtonText: getLocalizedContent(homeContentRaw.ctaButtonText, 'Get Started'),
+  featureTitle: getLocalizedContent(homeContentRaw.featureTitle, 'Lightning Fast Results'),
+  featureDescription: getLocalizedContent(homeContentRaw.featureDescription, 'Accelerate your digital transformation'),
+  aboutTitle: getLocalizedContent(homeContentRaw.aboutTitle, 'About Us'),
+  aboutDescription: getLocalizedContent(homeContentRaw.aboutDescription, 'We are passionate about helping businesses thrive in the digital landscape'),
+  peopleTitle: getLocalizedContent(homeContentRaw.peopleTitle, 'Meet Our People'),
+  peopleDescription: getLocalizedContent(homeContentRaw.peopleDescription, 'Get to know the talented individuals who drive our success'),
+  
+  // Statistics
+  projectsCount: getLocalizedContent(homeContentRaw.projectsCount, '100+'),
+  projectsLabel: getLocalizedContent(homeContentRaw.projectsLabel, 'Projects Completed'),
+  satisfactionCount: getLocalizedContent(homeContentRaw.satisfactionCount, '98%'),
+  satisfactionLabel: getLocalizedContent(homeContentRaw.satisfactionLabel, 'Client Satisfaction'),
+  experienceCount: getLocalizedContent(homeContentRaw.experienceCount, '10+'),
+  experienceLabel: getLocalizedContent(homeContentRaw.experienceLabel, 'Years Experience'),
+  supportCount: getLocalizedContent(homeContentRaw.supportCount, '24/7'),
+  supportLabel: getLocalizedContent(homeContentRaw.supportLabel, 'Support Available'),
+}))
 
 // Helper functions for service icons
 const getServiceIcon = (iconName) => {
@@ -527,14 +568,14 @@ const getIconColorClass = (iconName) => {
 }
 
 // Update page title with CMS data
-const pageTitle = `${siteSettings.siteName} - ${siteSettings.siteTagline}`
+const pageTitle = computed(() => `${siteSettings.siteName} - ${siteSettings.siteTagline}`)
 
 useSeoMeta({
   title: pageTitle,
   ogTitle: pageTitle,
-  description: homeContent.heroSubtitle,
-  ogDescription: homeContent.heroSubtitle,
-  ogImage: homeContent.heroImage || '/og-image.jpg',
+  description: () => homeContent.value.heroSubtitle,
+  ogDescription: () => homeContent.value.heroSubtitle,
+  ogImage: () => homeContent.value.heroImage || '/og-image.jpg',
   twitterCard: 'summary_large_image',
 })
 </script>

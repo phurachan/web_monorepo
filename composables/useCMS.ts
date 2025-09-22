@@ -1,7 +1,9 @@
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 export const useCMS = () => {
   const getHomeContent = async () => {
     try {
-      const data = await $fetch('/api/cms/home-content')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.HOME_CONTENT.GET))
       return data || getDefaultHomeContent()
     } catch (error) {
       console.error('Failed to fetch home content:', error)
@@ -11,7 +13,7 @@ export const useCMS = () => {
 
   const getServices = async () => {
     try {
-      const data = await $fetch('/api/cms/services')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES.GET))
       // Ensure features are parsed as arrays (fallback parsing)
       const servicesWithParsedFeatures = data?.map(service => ({
         ...service,
@@ -30,7 +32,7 @@ export const useCMS = () => {
 
   const getAboutContent = async () => {
     try {
-      const data = await $fetch('/api/cms/about-content')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.ABOUT_CONTENT.GET))
       return data || getDefaultAboutContent()
     } catch (error) {
       console.error('Failed to fetch about content:', error)
@@ -40,7 +42,7 @@ export const useCMS = () => {
 
   const getTeamMembers = async () => {
     try {
-      const data = await $fetch('/api/cms/team')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.GET))
       return data || []
     } catch (error) {
       console.error('Failed to fetch team members:', error)
@@ -50,7 +52,7 @@ export const useCMS = () => {
 
   const getContactContent = async () => {
     try {
-      const data = await $fetch('/api/cms/contact-content')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.CONTACT_CONTENT.GET))
       return data || getDefaultContactContent()
     } catch (error) {
       console.error('Failed to fetch contact content:', error)
@@ -60,7 +62,7 @@ export const useCMS = () => {
 
   const getFAQs = async () => {
     try {
-      const data = await $fetch('/api/cms/faqs')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.FAQS.GET))
       return data?.filter(f => f.isActive) || []
     } catch (error) {
       console.error('Failed to fetch FAQs:', error)
@@ -70,7 +72,7 @@ export const useCMS = () => {
 
   const getSiteSettings = async () => {
     try {
-      const data = await $fetch('/api/cms/site-settings')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SITE_SETTINGS.GET))
       return data || getDefaultSiteSettings()
     } catch (error) {
       console.error('Failed to fetch site settings:', error)
@@ -80,7 +82,7 @@ export const useCMS = () => {
 
   const getServicesContent = async () => {
     try {
-      const data = await $fetch('/api/cms/services-content')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES_CONTENT.GET))
       return data || getDefaultServicesContent()
     } catch (error) {
       console.error('Failed to fetch services content:', error)
@@ -90,7 +92,7 @@ export const useCMS = () => {
 
   const getTeamContent = async () => {
     try {
-      const data = await $fetch('/api/cms/team-content')
+      const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM_CONTENT.GET))
       return data || getDefaultTeamContent()
     } catch (error) {
       console.error('Failed to fetch team content:', error)

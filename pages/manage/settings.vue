@@ -229,6 +229,8 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   middleware: 'auth',
   layout: false
@@ -274,7 +276,7 @@ onMounted(async () => {
 
 const loadContent = async () => {
   try {
-    const response = await $fetch('/api/cms/site-settings')
+    const response = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SITE_SETTINGS.GET))
     
     if (response) {
       form.siteName = response.siteName || ''
@@ -317,7 +319,7 @@ const handleSubmit = async () => {
       socialLinks: JSON.stringify(socialLinks)
     }
 
-    await $fetch('/api/cms/site-settings', {
+    await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SITE_SETTINGS.POST), {
       method: 'POST',
       body: payload
     })

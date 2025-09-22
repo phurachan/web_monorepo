@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { ServiceHelper } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -15,22 +15,27 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   try {
-    const service = await prisma.service.update({
-      where: { id },
-      data: {
-        title: body.title,
-        description: body.description,
-        icon: body.icon || '',
-        image: body.image || null,
-        color: body.color || '#6495ed',
-        features: JSON.stringify(body.features || []),
-        order: body.order || 0,
-        isActive: body.isActive !== false
-      }
+    const service = await ServiceHelper.updateById(id!, {
+      title: body.title,
+      description: body.description,
+      icon: body.icon || '',
+      image: body.image || null,
+      color: body.color || '#6495ed',
+      features: JSON.stringify(body.features || []),
+      order: body.order || 0,
+      isActive: body.isActive !== false
     })
+
+    if (!service) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Service not found'
+      })
+    }
 
     return {
       ...service,
+      id: service._id.toString(),
       features: JSON.parse(service.features || '[]')
     }
   } catch (error) {

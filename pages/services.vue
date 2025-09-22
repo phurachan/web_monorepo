@@ -301,9 +301,32 @@
 <script setup>
 // Load site settings and services content from CMS
 const { getSiteSettings, getServicesContent } = useCMS()
-const { t, initLanguage } = useI18n()
+const { t, initLanguage, currentLanguage } = useI18n()
 const siteSettings = await getSiteSettings()
-const servicesContent = await getServicesContent()
+const servicesContentRaw = await getServicesContent()
+
+// Helper function to get language-specific content
+const getLocalizedContent = (field, fallback = '') => {
+  try {
+    if (typeof field === 'string') {
+      const parsed = JSON.parse(field)
+      return parsed[currentLanguage.value] || parsed.en || fallback
+    }
+    return field || fallback
+  } catch {
+    return field || fallback
+  }
+}
+
+// Create reactive localized content
+const servicesContent = computed(() => ({
+  // Basic fields
+  heroImage: servicesContentRaw.heroImage,
+  
+  // Multi-language text fields
+  heroTitle: getLocalizedContent(servicesContentRaw.heroTitle, 'Digital Marketing Services'),
+  heroSubtitle: getLocalizedContent(servicesContentRaw.heroSubtitle, 'Transform Your Business with Data-Driven Digital Marketing Solutions'),
+}))
 
 // Initialize language system
 onMounted(() => {
@@ -312,6 +335,6 @@ onMounted(() => {
 
 useSeoMeta({
   title: `Digital Marketing Services | ${siteSettings.siteName}`,
-  description: 'Comprehensive digital marketing services including SEO, social media marketing, web development, and PPC advertising to grow your business.',
+  description: () => servicesContent.value.heroSubtitle || 'Comprehensive digital marketing services including SEO, social media marketing, web development, and PPC advertising to grow your business.',
 })
 </script>

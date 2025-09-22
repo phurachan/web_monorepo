@@ -222,6 +222,8 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   middleware: 'auth',
   layout: false
@@ -282,7 +284,7 @@ const parseJsonField = (jsonString, fallback) => {
 
 const loadContent = async () => {
   try {
-    const response = await $fetch('/api/cms/contact-content')
+    const response = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.CONTACT_CONTENT.GET))
     
     if (response) {
       // Parse multi-language text fields
@@ -336,7 +338,7 @@ const handleSubmit = async () => {
       businessHours: JSON.stringify(businessHours)
     }
 
-    await $fetch('/api/cms/contact-content', {
+    await $fetch(buildApiUrl(API_ENDPOINTS.CMS.CONTACT_CONTENT.POST), {
       method: 'POST',
       body: payload
     })

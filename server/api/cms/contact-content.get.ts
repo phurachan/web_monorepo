@@ -1,19 +1,21 @@
-import { prisma } from '~/lib/prisma'
+import { ContentService } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
-    const content = await prisma.contactContent.findFirst({
-      orderBy: { createdAt: 'desc' }
-    })
+    const content = await ContentService.getContactContent()
 
     if (content && content.businessHours) {
       return {
         ...content,
+        id: content._id.toString(),
         businessHours: JSON.parse(content.businessHours)
       }
     }
 
-    return content
+    return content ? {
+      ...content,
+      id: content._id.toString()
+    } : content
   } catch (error) {
     throw createError({
       statusCode: 500,

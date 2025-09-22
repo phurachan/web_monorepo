@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { ContactContentHelper, ContentService } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -14,44 +14,33 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    // Check if content exists
-    const existingContent = await prisma.contactContent.findFirst()
+    const contentData = {
+      title: body.title,
+      subtitle: body.subtitle,
+      phone: body.phone,
+      email: body.email,
+      address: body.address,
+      businessHours: body.businessHours || '{}',
+      mapEmbedUrl: body.mapEmbedUrl || null,
+      bannerImage: body.bannerImage || null,
+      heroImage: body.heroImage || null
+    }
 
+    // Check if content exists
+    const existingContent = await ContentService.getContactContent()
+
+    let result
     if (existingContent) {
       // Update existing content
-      const updatedContent = await prisma.contactContent.update({
-        where: { id: existingContent.id },
-        data: {
-          title: body.title,
-          subtitle: body.subtitle,
-          phone: body.phone,
-          email: body.email,
-          address: body.address,
-          businessHours: body.businessHours || '{}',
-          mapEmbedUrl: body.mapEmbedUrl || null,
-          bannerImage: body.bannerImage || null,
-          heroImage: body.heroImage || null
-        }
-      })
-
-      return updatedContent
+      result = await ContactContentHelper.updateById(existingContent._id, contentData)
     } else {
       // Create new content
-      const newContent = await prisma.contactContent.create({
-        data: {
-          title: body.title,
-          subtitle: body.subtitle,
-          phone: body.phone,
-          email: body.email,
-          address: body.address,
-          businessHours: body.businessHours || '{}',
-          mapEmbedUrl: body.mapEmbedUrl || null,
-          bannerImage: body.bannerImage || null,
-          heroImage: body.heroImage || null
-        }
-      })
+      result = await ContactContentHelper.create(contentData)
+    }
 
-      return newContent
+    return {
+      ...result,
+      id: result!._id.toString()
     }
   } catch (error) {
     console.error('Contact content save error:', error)

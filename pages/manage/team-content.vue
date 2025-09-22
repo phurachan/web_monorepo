@@ -132,6 +132,8 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   middleware: 'auth',
   layout: false
@@ -176,7 +178,7 @@ const parseJsonField = (jsonString, fallback) => {
 
 const loadContent = async () => {
   try {
-    const response = await $fetch('/api/cms/team-content')
+    const response = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM_CONTENT.GET))
     
     if (response) {
       // Parse multi-language text fields
@@ -209,7 +211,7 @@ const handleSubmit = async () => {
       heroImage: formData.heroImage
     }
 
-    await $fetch('/api/cms/team-content', {
+    await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM_CONTENT.POST), {
       method: 'POST',
       body: submitData
     })

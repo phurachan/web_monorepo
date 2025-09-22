@@ -1,32 +1,27 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { ServicesContentHelper, ContentService } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     
-    const existingContent = await prisma.servicesContent.findFirst()
-    
+    const contentData = {
+      heroTitle: body.heroTitle,
+      heroSubtitle: body.heroSubtitle,
+      heroImage: body.heroImage
+    }
+
+    const existingContent = await ContentService.getServicesContent()
+
+    let result
     if (existingContent) {
-      const updatedContent = await prisma.servicesContent.update({
-        where: { id: existingContent.id },
-        data: {
-          heroTitle: body.heroTitle,
-          heroSubtitle: body.heroSubtitle,
-          heroImage: body.heroImage
-        }
-      })
-      return updatedContent
+      result = await ServicesContentHelper.updateById(existingContent._id, contentData)
     } else {
-      const newContent = await prisma.servicesContent.create({
-        data: {
-          heroTitle: body.heroTitle,
-          heroSubtitle: body.heroSubtitle,
-          heroImage: body.heroImage
-        }
-      })
-      return newContent
+      result = await ServicesContentHelper.create(contentData)
+    }
+
+    return {
+      ...result,
+      id: result!._id.toString()
     }
   } catch (error) {
     console.error('Error saving services content:', error)

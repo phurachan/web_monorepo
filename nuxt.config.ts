@@ -5,9 +5,15 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@vueuse/nuxt'],
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
+    // Private keys (only available on server-side)
     jwtSecret: process.env.JWT_SECRET || 'fallback-secret-key',
+    mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/digital_agency',
+
+    // Public keys (exposed to client-side)
     public: {
-      apiBase: '/api'
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || '/api',
+      siteName: process.env.NUXT_PUBLIC_SITE_NAME || 'Digital Agency',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     }
   },
   nitro: {

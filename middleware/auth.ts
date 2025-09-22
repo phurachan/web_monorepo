@@ -1,3 +1,5 @@
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
   // Only protect /manage routes
   if (!to.path.startsWith('/manage')) {
@@ -17,7 +19,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // const { $fetch } = useNuxtApp()
     console.log('Auth middleware: Checking authentication for path:', to.path)
     
-    const response = await $fetch('/api/auth/me')
+    const response = await $fetch(buildApiUrl(API_ENDPOINTS.AUTH.ME))
     
     if (!response?.user) {
       console.log('Auth middleware: No user found, redirecting to login')

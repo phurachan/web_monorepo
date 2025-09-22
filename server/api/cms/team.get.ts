@@ -1,13 +1,13 @@
-import { prisma } from '~/lib/prisma'
+import { TeamMemberService } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
-    const teamMembers = await prisma.teamMember.findMany({
-      where: { isActive: true },
-      orderBy: { order: 'asc' }
-    })
+    const teamMembers = await TeamMemberService.getActiveMembers()
 
-    return teamMembers
+    return teamMembers.map(member => ({
+      ...member,
+      id: member._id.toString()
+    }))
   } catch (error) {
     throw createError({
       statusCode: 500,

@@ -46,6 +46,8 @@
 </template>
 
 <script setup lang="ts">
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   layout: false
 })
@@ -66,7 +68,7 @@ const testAuthApi = async () => {
   apiError.value = null
   
   try {
-    const response = await $fetch('/api/auth/me')
+    const response = await $fetch(buildApiUrl(API_ENDPOINTS.AUTH.ME))
     apiResult.value = response
   } catch (error: any) {
     apiError.value = error.data || error.message || error

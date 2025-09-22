@@ -1,8 +1,19 @@
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 interface User {
   id: string
   email: string
   name: string
   role: string
+}
+
+interface AuthResponse {
+  user: User
+  token?: string
+}
+
+interface AuthMeResponse {
+  user: User
 }
 
 interface AuthState {
@@ -20,7 +31,7 @@ export const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await $fetch('/api/auth/login', {
+      const response = await $fetch<AuthResponse>(buildApiUrl(API_ENDPOINTS.AUTH.LOGIN), {
         method: 'POST',
         body: { email, password }
       })
@@ -44,7 +55,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await $fetch('/api/auth/logout', {
+      await $fetch(buildApiUrl(API_ENDPOINTS.AUTH.LOGOUT), {
         method: 'POST'
       })
 
@@ -59,11 +70,11 @@ export const useAuth = () => {
   }
 
   const checkAuth = async () => {
-    if (process.server) return
+    if (import.meta.server) return
 
     try {
-      const response = await $fetch('/api/auth/me')
-      
+      const response = await $fetch<AuthMeResponse>(buildApiUrl(API_ENDPOINTS.AUTH.ME))
+
       if (response?.user) {
         authState.value.user = response.user
         authState.value.isAuthenticated = true
@@ -84,7 +95,7 @@ export const useAuth = () => {
 
   const setupAdmin = async (email: string, password: string, name?: string) => {
     try {
-      const response = await $fetch('/api/auth/setup', {
+      const response = await $fetch(buildApiUrl(API_ENDPOINTS.AUTH.SETUP), {
         method: 'POST',
         body: { email, password, name }
       })

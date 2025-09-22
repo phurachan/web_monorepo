@@ -1,9 +1,11 @@
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 export const useSiteSettings = () => {
   const siteSettings = ref(null)
   
   const loadSiteSettings = async () => {
     try {
-      const settings = await $fetch('/api/cms/site-settings')
+      const settings = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SITE_SETTINGS.GET))
       siteSettings.value = settings || {
         siteName: 'DigitalFlow',
         siteTagline: 'Elevating brands through innovative digital marketing solutions',

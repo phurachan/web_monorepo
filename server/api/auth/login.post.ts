@@ -1,5 +1,5 @@
-import { prisma } from '~/lib/prisma'
 import { verifyPassword, generateToken } from '~/lib/auth'
+import { UserService } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,9 +12,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email }
-    })
+    const user = await UserService.findByEmail(email)
 
     if (!user) {
       throw createError({
@@ -32,7 +30,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const token = generateToken(user.id, user.email)
+    const token = generateToken(user._id!.toString(), user.email)
 
     // Set httpOnly cookie for API authentication
     setCookie(event, 'auth-token', token, {
@@ -51,12 +49,12 @@ export default defineEventHandler(async (event) => {
       path: '/',
       maxAge: 60 * 60 * 24 * 7 // 7 days
     })
-    
+
     console.log('Login successful: Cookies set for user:', user.email)
 
     return {
       user: {
-        id: user.id,
+        id: user._id!.toString(),
         email: user.email,
         name: user.name,
         role: user.role

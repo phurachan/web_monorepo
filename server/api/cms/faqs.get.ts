@@ -1,13 +1,16 @@
-import { prisma } from '~/lib/prisma'
+import { FAQHelper } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
-    const faqs = await prisma.fAQ.findMany({
-      where: { isActive: true },
-      orderBy: { order: 'asc' }
-    })
+    const faqs = await FAQHelper.findMany(
+      { isActive: true },
+      { sort: { order: 1 } }
+    )
 
-    return faqs
+    return faqs.map(faq => ({
+      ...faq,
+      id: faq._id.toString()
+    }))
   } catch (error) {
     throw createError({
       statusCode: 500,

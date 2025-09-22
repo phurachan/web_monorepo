@@ -187,6 +187,8 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   middleware: 'auth',
   layout: false
@@ -220,7 +222,7 @@ onMounted(async () => {
 
 const loadFaqs = async () => {
   try {
-    const data = await $fetch('/api/cms/faqs')
+    const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.FAQS.GET))
     faqs.value = data
   } catch (error) {
     errorMessage.value = 'Failed to load FAQs'
@@ -271,13 +273,13 @@ const saveFaq = async () => {
     }
 
     if (editingFaq.value) {
-      await $fetch(`/api/cms/faqs/${editingFaq.value.id}`, {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.FAQS.PUT(editingFaq.value.id)), {
         method: 'PUT',
         body: faqData
       })
       successMessage.value = 'FAQ updated successfully!'
     } else {
-      await $fetch('/api/cms/faqs', {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.FAQS.POST), {
         method: 'POST',
         body: faqData
       })
@@ -295,7 +297,7 @@ const saveFaq = async () => {
 
 const toggleFaqStatus = async (faq) => {
   try {
-    await $fetch(`/api/cms/faqs/${faq.id}`, {
+    await $fetch(buildApiUrl(API_ENDPOINTS.CMS.FAQS.PUT(faq.id)), {
       method: 'PUT',
       body: {
         ...faq,
@@ -313,7 +315,7 @@ const toggleFaqStatus = async (faq) => {
 const deleteFaq = async (faq) => {
   if (confirm(`Are you sure you want to delete this FAQ: "${faq.question}"?`)) {
     try {
-      await $fetch(`/api/cms/faqs/${faq.id}`, {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.FAQS.DELETE(faq.id)), {
         method: 'DELETE'
       })
       

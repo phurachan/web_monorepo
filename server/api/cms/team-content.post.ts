@@ -1,32 +1,27 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { TeamContentHelper, ContentService } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     
-    const existingContent = await prisma.teamContent.findFirst()
-    
+    const contentData = {
+      heroTitle: body.heroTitle,
+      heroSubtitle: body.heroSubtitle,
+      heroImage: body.heroImage
+    }
+
+    const existingContent = await ContentService.getTeamContent()
+
+    let result
     if (existingContent) {
-      const updatedContent = await prisma.teamContent.update({
-        where: { id: existingContent.id },
-        data: {
-          heroTitle: body.heroTitle,
-          heroSubtitle: body.heroSubtitle,
-          heroImage: body.heroImage
-        }
-      })
-      return updatedContent
+      result = await TeamContentHelper.updateById(existingContent._id, contentData)
     } else {
-      const newContent = await prisma.teamContent.create({
-        data: {
-          heroTitle: body.heroTitle,
-          heroSubtitle: body.heroSubtitle,
-          heroImage: body.heroImage
-        }
-      })
-      return newContent
+      result = await TeamContentHelper.create(contentData)
+    }
+
+    return {
+      ...result,
+      id: result!._id.toString()
     }
   } catch (error) {
     console.error('Error saving team content:', error)

@@ -1,12 +1,13 @@
-import { prisma } from '~/lib/prisma'
+import { ContentService } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
-    const content = await prisma.homeContent.findFirst({
-      orderBy: { createdAt: 'desc' }
-    })
+    const content = await ContentService.getHomeContent()
 
-    return content
+    return content ? {
+      ...content,
+      id: content._id.toString()
+    } : content
   } catch (error) {
     throw createError({
       statusCode: 500,

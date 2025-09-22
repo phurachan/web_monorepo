@@ -1,10 +1,8 @@
-import { prisma } from '~/lib/prisma'
+import { ServiceService } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   try {
-    const services = await prisma.service.findMany({
-      orderBy: { order: 'asc' }
-    })
+    const services = await ServiceService.getAllServices()
 
     return services.map(service => {
       console.log('Processing service:', service.title, 'features type:', typeof service.features, 'value:', service.features)
@@ -13,12 +11,14 @@ export default defineEventHandler(async (event) => {
         console.log('Parsed features:', parsedFeatures)
         return {
           ...service,
+          id: service._id.toString(),
           features: parsedFeatures
         }
       } catch (error) {
-        console.error('Failed to parse features for service:', service.id, error)
+        console.error('Failed to parse features for service:', service._id.toString(), error)
         return {
           ...service,
+          id: service._id.toString(),
           features: []
         }
       }

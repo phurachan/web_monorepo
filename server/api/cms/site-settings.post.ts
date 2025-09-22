@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { SiteSettingsHelper, ContentService } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -14,48 +14,35 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    // Check if settings exist
-    const existingSettings = await prisma.siteSettings.findFirst()
+    const settingsData = {
+      siteName: body.siteName,
+      siteTagline: body.siteTagline,
+      logo: body.logo || null,
+      favicon: body.favicon || null,
+      primaryColor: body.primaryColor || '#6495ed',
+      secondaryColor: body.secondaryColor || '#9333ea',
+      socialLinks: body.socialLinks || '{}',
+      metaDescription: body.metaDescription || '',
+      keywords: body.keywords || '',
+      contactEmail: body.contactEmail || '',
+      contactPhone: body.contactPhone || ''
+    }
 
+    // Check if settings exist
+    const existingSettings = await ContentService.getSiteSettings()
+
+    let result
     if (existingSettings) {
       // Update existing settings
-      const updatedSettings = await prisma.siteSettings.update({
-        where: { id: existingSettings.id },
-        data: {
-          siteName: body.siteName,
-          siteTagline: body.siteTagline,
-          logo: body.logo || null,
-          favicon: body.favicon || null,
-          primaryColor: body.primaryColor || '#6495ed',
-          secondaryColor: body.secondaryColor || '#9333ea',
-          socialLinks: body.socialLinks || '{}',
-          metaDescription: body.metaDescription || '',
-          keywords: body.keywords || '',
-          contactEmail: body.contactEmail || '',
-          contactPhone: body.contactPhone || ''
-        }
-      })
-
-      return updatedSettings
+      result = await SiteSettingsHelper.updateById(existingSettings._id, settingsData)
     } else {
       // Create new settings
-      const newSettings = await prisma.siteSettings.create({
-        data: {
-          siteName: body.siteName,
-          siteTagline: body.siteTagline,
-          logo: body.logo || null,
-          favicon: body.favicon || null,
-          primaryColor: body.primaryColor || '#6495ed',
-          secondaryColor: body.secondaryColor || '#9333ea',
-          socialLinks: body.socialLinks || '{}',
-          metaDescription: body.metaDescription || '',
-          keywords: body.keywords || '',
-          contactEmail: body.contactEmail || '',
-          contactPhone: body.contactPhone || ''
-        }
-      })
+      result = await SiteSettingsHelper.create(settingsData)
+    }
 
-      return newSettings
+    return {
+      ...result,
+      id: result!._id.toString()
     }
   } catch (error) {
     console.error('Site settings save error:', error)

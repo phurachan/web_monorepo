@@ -241,13 +241,38 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 // Fetch team members and site settings from API
-const teamMembers = await $fetch('/api/cms/team')
+const teamMembers = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.GET))
 const { getSiteSettings, getTeamContent } = useCMS()
-const { t, initLanguage } = useI18n()
+const { t, initLanguage, currentLanguage } = useI18n()
 const siteSettings = await getSiteSettings()
-const teamContent = await getTeamContent()
+const teamContentRaw = await getTeamContent()
 const loading = ref(false)
+
+// Helper function to get language-specific content
+const getLocalizedContent = (field, fallback = '') => {
+  try {
+    if (typeof field === 'string') {
+      const parsed = JSON.parse(field)
+      return parsed[currentLanguage.value] || parsed.en || fallback
+    }
+    return field || fallback
+  } catch {
+    return field || fallback
+  }
+}
+
+// Create reactive localized content
+const teamContent = computed(() => ({
+  // Basic fields
+  heroImage: teamContentRaw.heroImage,
+  
+  // Multi-language text fields
+  heroTitle: getLocalizedContent(teamContentRaw.heroTitle, 'Meet Our People'),
+  heroSubtitle: getLocalizedContent(teamContentRaw.heroSubtitle, 'Get to know the talented individuals who drive our success and make exceptional results possible.'),
+}))
 
 // Initialize language system
 onMounted(() => {

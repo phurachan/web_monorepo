@@ -1,5 +1,5 @@
-import { prisma } from '~/lib/prisma'
 import { verifyToken } from '~/lib/auth'
+import { UserHelper } from '~/server/lib/db-helpers'
 
 export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'auth-token')
@@ -29,15 +29,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true
-      }
-    })
+    const user = await UserHelper.findById(decoded.userId)
 
     if (!user) {
       console.log('User not found in database for ID:', decoded.userId)
@@ -48,7 +40,14 @@ export default defineEventHandler(async (event) => {
     }
 
     console.log('Auth me endpoint: returning user data for:', user.email)
-    return { user }
+    return {
+      user: {
+        id: user._id!.toString(),
+        email: user.email,
+        name: user.name,
+        role: user.role
+      }
+    }
   } catch (error) {
     console.log('Database error in auth me:', error)
     throw createError({

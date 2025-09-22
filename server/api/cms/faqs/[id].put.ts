@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { FAQHelper } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -15,17 +15,24 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
     const body = await readBody(event)
 
-    const faq = await prisma.fAQ.update({
-      where: { id },
-      data: {
-        question: body.question,
-        answer: body.answer,
-        order: body.order || 0,
-        isActive: body.isActive !== false
-      }
+    const faq = await FAQHelper.updateById(id!, {
+      question: body.question,
+      answer: body.answer,
+      order: body.order || 0,
+      isActive: body.isActive !== false
     })
 
-    return faq
+    if (!faq) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'FAQ not found'
+      })
+    }
+
+    return {
+      ...faq,
+      id: faq._id.toString()
+    }
   } catch (error) {
     throw createError({
       statusCode: 500,

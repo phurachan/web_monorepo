@@ -233,6 +233,8 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   middleware: 'auth',
   layout: false
@@ -260,9 +262,9 @@ const loadStats = async () => {
     // const { $fetch } = useNuxtApp()
     
     const [servicesRes, teamRes, faqRes] = await Promise.all([
-      $fetch('/api/cms/services'),
-      $fetch('/api/cms/team'),
-      $fetch('/api/cms/faqs')
+      $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES.GET)),
+      $fetch(buildApiUrl(API_ENDPOINTS.CMS.TEAM.GET)),
+      $fetch(buildApiUrl(API_ENDPOINTS.CMS.FAQS.GET))
     ])
 
     stats.value = {

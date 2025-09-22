@@ -84,6 +84,8 @@
 </template>
 
 <script setup lang="ts">
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 interface Props {
   modelValue?: string
   label?: string
@@ -143,7 +145,7 @@ const uploadFile = async (file: File) => {
 
     // Upload file
     // const { $fetch } = useNuxtApp()
-    const response = await $fetch('/api/upload/image', {
+    const response = await $fetch(buildApiUrl(API_ENDPOINTS.UPLOAD.IMAGE), {
       method: 'POST',
       body: formData
     })

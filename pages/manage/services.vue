@@ -304,6 +304,8 @@
 </template>
 
 <script setup>
+import { API_ENDPOINTS, buildApiUrl } from '~/constants/api'
+
 definePageMeta({
   middleware: 'auth',
   layout: false
@@ -358,7 +360,7 @@ onMounted(async () => {
 const loadServices = async () => {
   try {
     // const { $fetch } = useNuxtApp()
-    const data = await $fetch('/api/cms/services')
+    const data = await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES.GET))
     // Ensure features are parsed as arrays (fallback parsing)
     services.value = data.map(service => ({
       ...service,
@@ -462,13 +464,13 @@ const saveService = async () => {
     }
 
     if (editingService.value) {
-      await $fetch(`/api/cms/services/${editingService.value.id}`, {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES.PUT(editingService.value.id)), {
         method: 'PUT',
         body: serviceData
       })
       successMessage.value = 'Service updated successfully!'
     } else {
-      await $fetch('/api/cms/services', {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES.POST), {
         method: 'POST',
         body: serviceData
       })
@@ -487,7 +489,7 @@ const saveService = async () => {
 const toggleServiceStatus = async (service) => {
   try {
     // const { $fetch } = useNuxtApp()
-    await $fetch(`/api/cms/services/${service.id}`, {
+    await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES.PUT(service.id)), {
       method: 'PUT',
       body: {
         ...service,
@@ -507,7 +509,7 @@ const deleteService = async (service) => {
   if (confirm(`Are you sure you want to delete "${service.title}"?`)) {
     try {
       // const { $fetch } = useNuxtApp()
-      await $fetch(`/api/cms/services/${service.id}`, {
+      await $fetch(buildApiUrl(API_ENDPOINTS.CMS.SERVICES.DELETE(service.id)), {
         method: 'DELETE'
       })
       

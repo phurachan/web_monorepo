@@ -357,10 +357,33 @@
 <script setup>
 // Load site settings, contact content and FAQs
 const { getContactContent, getFAQs, getSiteSettings } = useCMS()
-const { t, initLanguage } = useI18n()
-const contactContent = await getContactContent()
+const { t, initLanguage, currentLanguage } = useI18n()
+const contactContentRaw = await getContactContent()
 const faqs = await getFAQs()
 const siteSettings = await getSiteSettings()
+
+// Helper function to get language-specific content
+const getLocalizedContent = (field, fallback = '') => {
+  try {
+    if (typeof field === 'string') {
+      const parsed = JSON.parse(field)
+      return parsed[currentLanguage.value] || parsed.en || fallback
+    }
+    return field || fallback
+  } catch {
+    return field || fallback
+  }
+}
+
+// Create reactive localized content
+const contactContent = computed(() => ({
+  // Basic fields
+  heroImage: contactContentRaw.heroImage,
+  
+  // Multi-language text fields
+  title: getLocalizedContent(contactContentRaw.title, 'Contact Us'),
+  subtitle: getLocalizedContent(contactContentRaw.subtitle, 'Ready to transform your digital presence? Let\'s discuss how we can help accelerate your business growth.'),
+}))
 
 // Initialize language system
 onMounted(() => {

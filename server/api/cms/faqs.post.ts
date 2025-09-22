@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { FAQHelper } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -14,16 +14,17 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    const faq = await prisma.fAQ.create({
-      data: {
-        question: body.question,
-        answer: body.answer,
-        order: body.order || 0,
-        isActive: body.isActive !== false
-      }
+    const faq = await FAQHelper.create({
+      question: body.question,
+      answer: body.answer,
+      order: body.order || 0,
+      isActive: body.isActive !== false
     })
 
-    return faq
+    return {
+      ...faq,
+      id: faq._id.toString()
+    }
   } catch (error) {
     throw createError({
       statusCode: 500,

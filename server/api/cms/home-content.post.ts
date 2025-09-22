@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { HomeContentHelper, ContentService } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -14,52 +14,37 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    // Check if content exists
-    const existingContent = await prisma.homeContent.findFirst()
+    const contentData = {
+      heroTitle: body.heroTitle,
+      heroSubtitle: body.heroSubtitle,
+      heroImage: body.heroImage || null,
+      featureTitle: body.featureTitle,
+      featureDescription: body.featureDescription,
+      featureImage: body.featureImage || null,
+      ctaText: body.ctaText,
+      ctaButtonText: body.ctaButtonText,
+      aboutTitle: body.aboutTitle,
+      aboutDescription: body.aboutDescription,
+      aboutImage: body.aboutImage || null,
+      peopleTitle: body.peopleTitle,
+      peopleDescription: body.peopleDescription
+    }
 
+    // Check if content exists
+    const existingContent = await ContentService.getHomeContent()
+
+    let result
     if (existingContent) {
       // Update existing content
-      const updatedContent = await prisma.homeContent.update({
-        where: { id: existingContent.id },
-        data: {
-          heroTitle: body.heroTitle,
-          heroSubtitle: body.heroSubtitle,
-          heroImage: body.heroImage || null,
-          featureTitle: body.featureTitle,
-          featureDescription: body.featureDescription,
-          featureImage: body.featureImage || null,
-          ctaText: body.ctaText,
-          ctaButtonText: body.ctaButtonText,
-          aboutTitle: body.aboutTitle,
-          aboutDescription: body.aboutDescription,
-          aboutImage: body.aboutImage || null,
-          peopleTitle: body.peopleTitle,
-          peopleDescription: body.peopleDescription
-        }
-      })
-
-      return updatedContent
+      result = await HomeContentHelper.updateById(existingContent._id, contentData)
     } else {
       // Create new content
-      const newContent = await prisma.homeContent.create({
-        data: {
-          heroTitle: body.heroTitle,
-          heroSubtitle: body.heroSubtitle,
-          heroImage: body.heroImage || null,
-          featureTitle: body.featureTitle,
-          featureDescription: body.featureDescription,
-          featureImage: body.featureImage || null,
-          ctaText: body.ctaText,
-          ctaButtonText: body.ctaButtonText,
-          aboutTitle: body.aboutTitle,
-          aboutDescription: body.aboutDescription,
-          aboutImage: body.aboutImage || null,
-          peopleTitle: body.peopleTitle,
-          peopleDescription: body.peopleDescription
-        }
-      })
+      result = await HomeContentHelper.create(contentData)
+    }
 
-      return newContent
+    return {
+      ...result,
+      id: result!._id.toString()
     }
   } catch (error) {
     throw createError({

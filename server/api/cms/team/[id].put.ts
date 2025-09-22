@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { TeamMemberHelper } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -15,22 +15,29 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
     const body = await readBody(event)
 
-    const teamMember = await prisma.teamMember.update({
-      where: { id },
-      data: {
-        name: body.name,
-        position: body.position,
-        description: body.description,
-        image: body.image || null,
-        email: body.email || null,
-        linkedin: body.linkedin || null,
-        twitter: body.twitter || null,
-        order: body.order || 0,
-        isActive: body.isActive !== false
-      }
+    const teamMember = await TeamMemberHelper.updateById(id!, {
+      name: body.name,
+      position: body.position,
+      description: body.description,
+      image: body.image || null,
+      email: body.email || null,
+      linkedin: body.linkedin || null,
+      twitter: body.twitter || null,
+      order: body.order || 0,
+      isActive: body.isActive !== false
     })
 
-    return teamMember
+    if (!teamMember) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Team member not found'
+      })
+    }
+
+    return {
+      ...teamMember,
+      id: teamMember._id.toString()
+    }
   } catch (error) {
     throw createError({
       statusCode: 500,

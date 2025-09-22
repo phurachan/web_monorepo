@@ -1,4 +1,4 @@
-import { prisma } from '~/lib/prisma'
+import { TeamMemberHelper } from '~/server/lib/db-helpers'
 import { verifyToken } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
@@ -14,9 +14,14 @@ export default defineEventHandler(async (event) => {
   try {
     const id = getRouterParam(event, 'id')
 
-    await prisma.teamMember.delete({
-      where: { id }
-    })
+    const deleted = await TeamMemberHelper.deleteById(id!)
+
+    if (!deleted) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Team member not found'
+      })
+    }
 
     return { success: true }
   } catch (error) {
