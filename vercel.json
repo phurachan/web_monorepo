@@ -1,0 +1,14 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".output/public",
+  "framework": "nuxtjs",
+  "env": {
+    "NUXT_PUBLIC_SITE_NAME": "Web Monorepo",
+    "NUXT_PUBLIC_SITE_URL": "https://your-domain.vercel.app"
+  },
+  "functions": {
+    ".output/server/index.mjs": {
+      "maxDuration": 30
+    }
+  }
+}
