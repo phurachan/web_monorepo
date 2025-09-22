@@ -15,6 +15,7 @@
           
           <div class="flex items-center space-x-4">
             <button @click="openAddModal" class="btn-primary">Add Service</button>
+            <NuxtLink to="/services" target="_blank" class="btn-secondary">View Live</NuxtLink>
             <button @click="handleLogout" class="btn-secondary">Logout</button>
           </div>
         </div>
@@ -126,32 +127,57 @@
             </button>
           </div>
 
+          <!-- Language Switcher -->
+          <div class="bg-gray-50 p-4 rounded-lg mb-6">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-medium text-gray-900">Content Language</h3>
+              <div class="flex items-center bg-white rounded-lg p-1 border">
+                <button 
+                  @click="currentLanguage = 'en'"
+                  type="button"
+                  :class="currentLanguage === 'en' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:text-gray-900'"
+                  class="px-3 py-1 rounded-md text-xs font-medium transition-colors"
+                >
+                  🇺🇸 EN
+                </button>
+                <button 
+                  @click="currentLanguage = 'th'"
+                  type="button"
+                  :class="currentLanguage === 'th' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:text-gray-900'"
+                  class="px-3 py-1 rounded-md text-xs font-medium transition-colors"
+                >
+                  🇹🇭 TH
+                </button>
+              </div>
+            </div>
+          </div>
+
           <form @submit.prevent="saveService" class="space-y-6">
             <div class="relative">
               <input 
-                v-model="serviceForm.title" 
+                v-model="serviceFormData.title[currentLanguage]" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
                 required
               >
-              <label class="floating-label">Service Title</label>
+              <label class="floating-label">Service Title ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <div class="relative">
               <textarea 
-                v-model="serviceForm.description" 
+                v-model="serviceFormData.description[currentLanguage]" 
                 placeholder=" " 
                 rows="3" 
                 class="form-input resize-none peer"
                 required
               ></textarea>
-              <label class="floating-label">Description</label>
+              <label class="floating-label">Description ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <div class="relative">
               <input 
-                v-model="serviceForm.icon" 
+                v-model="serviceFormData.icon" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
@@ -159,14 +185,13 @@
               <label class="floating-label">Icon Name (e.g., search, social, code)</label>
             </div>
 
-            <div class="relative">
-              <input 
-                v-model="serviceForm.image" 
-                type="url" 
-                placeholder=" " 
-                class="form-input peer"
-              >
-              <label class="floating-label">Image URL (optional)</label>
+            <div>
+              <label class="form-label">Service Image</label>
+              <ImageUpload 
+                v-model="serviceFormData.image" 
+                label="Service Image (optional)"
+                help-text="Optional image for the service. Will be displayed in service cards and details."
+              />
             </div>
 
             <!-- Color Picker -->
@@ -175,14 +200,14 @@
               <div class="flex items-center space-x-4">
                 <div class="relative">
                   <input 
-                    v-model="serviceForm.color" 
+                    v-model="serviceFormData.color" 
                     type="color" 
                     class="w-16 h-16 border-2 border-gray-300 rounded-lg cursor-pointer"
                   >
                 </div>
                 <div class="flex-1">
                   <input 
-                    v-model="serviceForm.color" 
+                    v-model="serviceFormData.color" 
                     type="text" 
                     placeholder="#6495ed" 
                     class="form-input"
@@ -194,14 +219,14 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Features</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Features ({{ currentLanguage.toUpperCase() }})</label>
               <div class="space-y-2">
-                <div v-for="(feature, index) in serviceForm.features" :key="index" class="flex space-x-2">
+                <div v-for="(feature, index) in serviceFormData.features" :key="index" class="flex space-x-2">
                   <input 
-                    v-model="serviceForm.features[index]" 
+                    v-model="serviceFormData.features[index][currentLanguage]" 
                     type="text" 
                     class="form-input flex-1"
-                    placeholder="Feature name"
+                    :placeholder="`Feature ${index + 1} (${currentLanguage.toUpperCase()})`"
                   >
                   <button 
                     @click="removeFeature(index)"
@@ -226,7 +251,7 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="relative">
                 <input 
-                  v-model.number="serviceForm.order" 
+                  v-model.number="serviceFormData.order" 
                   type="number" 
                   placeholder=" " 
                   class="form-input peer"
@@ -237,7 +262,7 @@
 
               <div class="flex items-center space-x-3">
                 <input 
-                  v-model="serviceForm.isActive" 
+                  v-model="serviceFormData.isActive" 
                   type="checkbox" 
                   id="isActive"
                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
@@ -297,17 +322,33 @@ const editingService = ref(null)
 const successMessage = ref('')
 const errorMessage = ref('')
 
-// Service form
-const serviceForm = reactive({
-  title: '',
-  description: '',
+// Language state for modal
+const currentLanguage = ref('en')
+
+// Multi-language service form
+const serviceFormData = reactive({
+  // Text fields as JSON {en: "English", th: "Thai"}
+  title: { en: '', th: '' },
+  description: { en: '', th: '' },
+  // Features array with multi-language support
+  features: [{ en: '', th: '' }],
+  // Language-neutral fields
   icon: '',
   image: '',
   color: '#6495ed',
-  features: [''],
   order: 0,
   isActive: true
 })
+
+// Helper function to parse JSON with fallback
+const parseJsonField = (jsonString, fallback) => {
+  try {
+    const parsed = JSON.parse(jsonString || '{}')
+    return typeof parsed === 'object' && parsed !== null ? parsed : fallback
+  } catch {
+    return fallback
+  }
+}
 
 // Methods
 onMounted(async () => {
@@ -342,14 +383,29 @@ const openAddModal = () => {
 
 const editService = (service) => {
   editingService.value = service
-  serviceForm.title = service.title
-  serviceForm.description = service.description
-  serviceForm.icon = service.icon || ''
-  serviceForm.image = service.image || ''
-  serviceForm.color = service.color || '#6495ed'
-  serviceForm.features = service.features.length ? [...service.features] : ['']
-  serviceForm.order = service.order
-  serviceForm.isActive = service.isActive
+  
+  // Parse multi-language fields
+  serviceFormData.title = parseJsonField(service.title, { en: '', th: '' })
+  serviceFormData.description = parseJsonField(service.description, { en: '', th: '' })
+  
+  // Parse features array
+  const features = typeof service.features === 'string' ? JSON.parse(service.features) : service.features
+  if (features.length > 0) {
+    serviceFormData.features = features.map(feature => 
+      typeof feature === 'object' ? feature : { en: feature || '', th: '' }
+    )
+  } else {
+    serviceFormData.features = [{ en: '', th: '' }]
+  }
+  
+  // Language-neutral fields
+  serviceFormData.icon = service.icon || ''
+  serviceFormData.image = service.image || ''
+  serviceFormData.color = service.color || '#6495ed'
+  serviceFormData.order = service.order
+  serviceFormData.isActive = service.isActive
+  
+  currentLanguage.value = 'en'
   showModal.value = true
 }
 
@@ -360,23 +416,24 @@ const closeModal = () => {
 }
 
 const resetForm = () => {
-  serviceForm.title = ''
-  serviceForm.description = ''
-  serviceForm.icon = ''
-  serviceForm.image = ''
-  serviceForm.color = '#6495ed'
-  serviceForm.features = ['']
-  serviceForm.order = 0
-  serviceForm.isActive = true
+  serviceFormData.title = { en: '', th: '' }
+  serviceFormData.description = { en: '', th: '' }
+  serviceFormData.features = [{ en: '', th: '' }]
+  serviceFormData.icon = ''
+  serviceFormData.image = ''
+  serviceFormData.color = '#6495ed'
+  serviceFormData.order = 0
+  serviceFormData.isActive = true
+  currentLanguage.value = 'en'
 }
 
 const addFeature = () => {
-  serviceForm.features.push('')
+  serviceFormData.features.push({ en: '', th: '' })
 }
 
 const removeFeature = (index) => {
-  if (serviceForm.features.length > 1) {
-    serviceForm.features.splice(index, 1)
+  if (serviceFormData.features.length > 1) {
+    serviceFormData.features.splice(index, 1)
   }
 }
 
@@ -386,18 +443,22 @@ const saveService = async () => {
   errorMessage.value = ''
 
   try {
-    // const { $fetch } = useNuxtApp()
-    const filteredFeatures = serviceForm.features.filter(f => f.trim())
+    // Filter out empty features and prepare multi-language data
+    const filteredFeatures = serviceFormData.features.filter(feature => 
+      feature.en.trim() || feature.th.trim()
+    )
     
     const serviceData = {
-      title: serviceForm.title,
-      description: serviceForm.description,
-      icon: serviceForm.icon,
-      image: serviceForm.image,
-      color: serviceForm.color,
-      features: filteredFeatures,
-      order: serviceForm.order,
-      isActive: serviceForm.isActive
+      // Multi-language fields as JSON strings
+      title: JSON.stringify(serviceFormData.title),
+      description: JSON.stringify(serviceFormData.description),
+      features: JSON.stringify(filteredFeatures),
+      // Language-neutral fields
+      icon: serviceFormData.icon,
+      image: serviceFormData.image,
+      color: serviceFormData.color,
+      order: serviceFormData.order,
+      isActive: serviceFormData.isActive
     }
 
     if (editingService.value) {

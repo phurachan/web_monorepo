@@ -28,8 +28,36 @@
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
 
+      <!-- Language Switcher -->
+      <div v-else class="card p-4 mb-8">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-medium text-gray-900">Content Language</h3>
+          <div class="flex items-center bg-gray-100 rounded-lg p-1">
+            <button 
+              @click="currentLanguage = 'en'"
+              type="button"
+              :class="currentLanguage === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'"
+              class="px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              🇺🇸 English
+            </button>
+            <button 
+              @click="currentLanguage = 'th'"
+              type="button"
+              :class="currentLanguage === 'th' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'"
+              class="px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              🇹🇭 ไทย
+            </button>
+          </div>
+        </div>
+        <p class="text-sm text-gray-500 mt-2">
+          Switch between languages to edit content. {{ currentLanguage === 'en' ? 'Editing English content' : 'กำลังแก้ไขเนื้อหาภาษาไทย' }}
+        </p>
+      </div>
+
       <!-- Form -->
-      <form v-else @submit.prevent="handleSubmit" class="space-y-8">
+      <form v-if="!loading" @submit.prevent="handleSubmit" class="space-y-8">
         <!-- Hero Section -->
         <div class="card p-6">
           <h2 class="text-xl font-bold text-gray-900 mb-6">Hero Section</h2>
@@ -37,30 +65,75 @@
           <div class="space-y-6">
             <div class="relative">
               <input 
-                v-model="form.heroTitle" 
+                v-model="formData.heroTitle[currentLanguage]" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
                 required
               >
-              <label class="floating-label">Hero Title</label>
+              <label class="floating-label">Hero Title ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <div class="relative">
               <textarea 
-                v-model="form.heroSubtitle" 
+                v-model="formData.heroSubtitle[currentLanguage]" 
                 placeholder=" " 
                 rows="3" 
                 class="form-input resize-none peer"
                 required
               ></textarea>
-              <label class="floating-label">Hero Subtitle</label>
+              <label class="floating-label">Hero Subtitle ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <ImageUpload 
-              v-model="form.heroImage" 
-              label="Hero Image (optional)"
+              v-model="formData.heroImage" 
+              label="Hero Background Image (optional)"
             />
+            <p class="text-sm text-gray-500 mt-2">
+              <strong>📐 Recommended:</strong> 1920×1080px (16:9 ratio) or larger<br>
+              <strong>📏 Min size:</strong> 1200×800px for best quality<br>
+              <strong>💾 Max file size:</strong> 5MB | <strong>📁 Formats:</strong> JPG, PNG, WebP<br>
+              <strong>💡 Tip:</strong> Use landscape images for best results. A dark overlay will be applied for text readability.
+            </p>
+          </div>
+        </div>
+
+        <!-- Feature Highlight Section -->
+        <div class="card p-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-6">Feature Highlight</h2>
+          
+          <div class="space-y-6">
+            <div class="relative">
+              <input 
+                v-model="formData.featureTitle[currentLanguage]" 
+                type="text" 
+                placeholder=" " 
+                class="form-input peer"
+                required
+              >
+              <label class="floating-label">Feature Title ({{ currentLanguage.toUpperCase() }})</label>
+            </div>
+
+            <div class="relative">
+              <textarea 
+                v-model="formData.featureDescription[currentLanguage]" 
+                placeholder=" " 
+                rows="3" 
+                class="form-input resize-none peer"
+                required
+              ></textarea>
+              <label class="floating-label">Feature Description ({{ currentLanguage.toUpperCase() }})</label>
+            </div>
+
+            <ImageUpload 
+              v-model="formData.featureImage" 
+              label="Feature Image (optional)"
+            />
+            <p class="text-sm text-gray-500 mt-2">
+              <strong>📐 Recommended:</strong> 512×512px (1:1 square ratio)<br>
+              <strong>📏 Min size:</strong> 256×256px | <strong>💾 Max:</strong> 5MB<br>
+              <strong>💡 Tip:</strong> Square images work best for the feature highlight box.
+            </p>
           </div>
         </div>
 
@@ -71,24 +144,24 @@
           <div class="space-y-6">
             <div class="relative">
               <input 
-                v-model="form.ctaText" 
+                v-model="formData.ctaText[currentLanguage]" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
                 required
               >
-              <label class="floating-label">CTA Title</label>
+              <label class="floating-label">CTA Title ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <div class="relative">
               <input 
-                v-model="form.ctaButtonText" 
+                v-model="formData.ctaButtonText[currentLanguage]" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
                 required
               >
-              <label class="floating-label">CTA Button Text</label>
+              <label class="floating-label">CTA Button Text ({{ currentLanguage.toUpperCase() }})</label>
             </div>
           </div>
         </div>
@@ -100,30 +173,35 @@
           <div class="space-y-6">
             <div class="relative">
               <input 
-                v-model="form.aboutTitle" 
+                v-model="formData.aboutTitle[currentLanguage]" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
                 required
               >
-              <label class="floating-label">About Section Title</label>
+              <label class="floating-label">About Section Title ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <div class="relative">
               <textarea 
-                v-model="form.aboutDescription" 
+                v-model="formData.aboutDescription[currentLanguage]" 
                 placeholder=" " 
                 rows="4" 
                 class="form-input resize-none peer"
                 required
               ></textarea>
-              <label class="floating-label">About Description</label>
+              <label class="floating-label">About Description ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <ImageUpload 
-              v-model="form.aboutImage" 
-              label="About Image (optional)"
+              v-model="formData.aboutImage" 
+              label="About Section Image (optional)"
             />
+            <p class="text-sm text-gray-500 mt-2">
+              <strong>📐 Recommended:</strong> 800×600px (4:3 ratio)<br>
+              <strong>📏 Min size:</strong> 400×300px | <strong>💾 Max:</strong> 5MB<br>
+              <strong>💡 Note:</strong> Currently not displayed on site - available for future use.
+            </p>
           </div>
         </div>
 
@@ -134,24 +212,24 @@
           <div class="space-y-6">
             <div class="relative">
               <input 
-                v-model="form.peopleTitle" 
+                v-model="formData.peopleTitle[currentLanguage]" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
                 required
               >
-              <label class="floating-label">People Section Title</label>
+              <label class="floating-label">People Section Title ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <div class="relative">
               <textarea 
-                v-model="form.peopleDescription" 
+                v-model="formData.peopleDescription[currentLanguage]" 
                 placeholder=" " 
                 rows="3" 
                 class="form-input resize-none peer"
                 required
               ></textarea>
-              <label class="floating-label">People Section Description</label>
+              <label class="floating-label">People Section Description ({{ currentLanguage.toUpperCase() }})</label>
             </div>
           </div>
         </div>
@@ -201,18 +279,26 @@ const { logout } = useAuth()
 const { getSiteSettings } = useCMS()
 const siteSettings = await getSiteSettings()
 
-// Form data
-const form = reactive({
-  heroTitle: '',
-  heroSubtitle: '',
+// Language state
+const currentLanguage = ref('en')
+
+// Multi-language form data
+const formData = reactive({
+  // Text fields as JSON {en: "English", th: "Thai"}
+  heroTitle: { en: '', th: '' },
+  heroSubtitle: { en: '', th: '' },
+  featureTitle: { en: 'Expert Management Solutions', th: 'โซลูชั่นการจัดการจากผู้เชี่ยวชาญ' },
+  featureDescription: { en: 'Streamline your business operations and enhance productivity', th: 'ปรับปรุงการดำเนินธุรกิจแลเพิ่มผลิตภาพ' },
+  ctaText: { en: '', th: '' },
+  ctaButtonText: { en: '', th: '' },
+  aboutTitle: { en: '', th: '' },
+  aboutDescription: { en: '', th: '' },
+  peopleTitle: { en: 'Meet Our People', th: 'พบกับทีมงานของเรา' },
+  peopleDescription: { en: 'Get to know the talented individuals who drive our success', th: 'ทำความรู้จักกับบุคคลที่มีความสามารถผลักดันความสำเร็จ' },
+  // Images (language-neutral)
   heroImage: '',
-  ctaText: '',
-  ctaButtonText: '',
-  aboutTitle: '',
-  aboutDescription: '',
-  aboutImage: '',
-  peopleTitle: '',
-  peopleDescription: ''
+  featureImage: '',
+  aboutImage: ''
 })
 
 // Component state
@@ -226,22 +312,37 @@ onMounted(async () => {
   await loadContent()
 })
 
+// Helper function to parse JSON with fallback
+const parseJsonField = (jsonString, fallback) => {
+  try {
+    const parsed = JSON.parse(jsonString || '{}')
+    return typeof parsed === 'object' && parsed !== null ? parsed : fallback
+  } catch {
+    return fallback
+  }
+}
+
 const loadContent = async () => {
   try {
-    // const { $fetch } = useNuxtApp()
     const response = await $fetch('/api/cms/home-content')
     
     if (response) {
-      form.heroTitle = response.heroTitle || ''
-      form.heroSubtitle = response.heroSubtitle || ''
-      form.heroImage = response.heroImage || ''
-      form.ctaText = response.ctaText || ''
-      form.ctaButtonText = response.ctaButtonText || ''
-      form.aboutTitle = response.aboutTitle || ''
-      form.aboutDescription = response.aboutDescription || ''
-      form.aboutImage = response.aboutImage || ''
-      form.peopleTitle = response.peopleTitle || 'Meet Our People'
-      form.peopleDescription = response.peopleDescription || 'Get to know the talented individuals who drive our success and make exceptional results possible'
+      // Parse multi-language text fields
+      formData.heroTitle = parseJsonField(response.heroTitle, { en: '', th: '' })
+      formData.heroSubtitle = parseJsonField(response.heroSubtitle, { en: '', th: '' })
+      formData.featureTitle = parseJsonField(response.featureTitle, { en: 'Expert Management Solutions', th: 'โซลูชั่นการจัดการจากผู้เชี่ยวชาญ' })
+      formData.featureDescription = parseJsonField(response.featureDescription, { en: 'Streamline your business operations and enhance productivity', th: 'ปรับปรุงการดำเนินธุรกิจและเพิ่มผลิตภาพ' })
+      formData.ctaText = parseJsonField(response.ctaText, { en: '', th: '' })
+      formData.ctaButtonText = parseJsonField(response.ctaButtonText, { en: '', th: '' })
+      formData.aboutTitle = parseJsonField(response.aboutTitle, { en: '', th: '' })
+      formData.aboutDescription = parseJsonField(response.aboutDescription, { en: '', th: '' })
+      formData.peopleTitle = parseJsonField(response.peopleTitle, { en: 'Meet Our People', th: 'พบกับทีมงานของเรา' })
+      formData.peopleDescription = parseJsonField(response.peopleDescription, { en: 'Get to know the talented individuals who drive our success', th: 'ทำความรู้จักกับบุคคลที่มีความสามารถผลักดันความสำเร็จ' })
+      
+      // Images (language-neutral)
+      formData.heroImage = response.heroImage || ''
+      formData.featureImage = response.featureImage || ''
+      formData.aboutImage = response.aboutImage || ''
     }
   } catch (error) {
     errorMessage.value = 'Failed to load content'
@@ -257,10 +358,28 @@ const handleSubmit = async () => {
   errorMessage.value = ''
 
   try {
-    // const { $fetch } = useNuxtApp()
+    // Prepare form data with JSON stringified multi-language fields
+    const submitData = {
+      // Text fields as JSON strings
+      heroTitle: JSON.stringify(formData.heroTitle),
+      heroSubtitle: JSON.stringify(formData.heroSubtitle),
+      featureTitle: JSON.stringify(formData.featureTitle),
+      featureDescription: JSON.stringify(formData.featureDescription),
+      ctaText: JSON.stringify(formData.ctaText),
+      ctaButtonText: JSON.stringify(formData.ctaButtonText),
+      aboutTitle: JSON.stringify(formData.aboutTitle),
+      aboutDescription: JSON.stringify(formData.aboutDescription),
+      peopleTitle: JSON.stringify(formData.peopleTitle),
+      peopleDescription: JSON.stringify(formData.peopleDescription),
+      // Images (language-neutral)
+      heroImage: formData.heroImage,
+      featureImage: formData.featureImage,
+      aboutImage: formData.aboutImage
+    }
+
     await $fetch('/api/cms/home-content', {
       method: 'POST',
-      body: form
+      body: submitData
     })
 
     successMessage.value = 'Home page content updated successfully!'

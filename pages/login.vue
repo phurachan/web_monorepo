@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-gradient-to-br from-primary-very-light to-primary-light flex items-center justify-center p-4" style="display: flex !important; align-items: center !important; justify-content: center !important; min-height: 100vh !important;">
     <div class="max-w-md w-full space-y-8">
       <!-- Logo -->
       <div class="text-center">
@@ -231,3 +231,5 @@ useSeoMeta({
   robots: 'noindex, nofollow'
 })
 </script>
+
+

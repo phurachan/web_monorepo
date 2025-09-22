@@ -111,7 +111,10 @@
             <h3 class="text-lg font-semibold text-gray-900">Services</h3>
           </div>
           <p class="text-gray-600 mb-4">Add, edit, and organize your service offerings and descriptions</p>
-          <NuxtLink to="/manage/services" class="btn-primary">Manage Services</NuxtLink>
+          <div class="flex gap-2">
+            <NuxtLink to="/manage/services-content" class="btn-primary">Edit Content</NuxtLink>
+            <NuxtLink to="/manage/services" class="btn-primary">Manage Services</NuxtLink>
+          </div>
         </div>
 
         <!-- About Page -->
@@ -139,7 +142,10 @@
             <h3 class="text-lg font-semibold text-gray-900">People</h3>
           </div>
           <p class="text-gray-600 mb-4">Manage people profiles, photos, and descriptions - perfect for team members, customers, or partners</p>
-          <NuxtLink to="/manage/team" class="btn-primary">Manage People</NuxtLink>
+          <div class="flex gap-2">
+            <NuxtLink to="/manage/team-content" class="btn-primary">Edit Content</NuxtLink>
+            <NuxtLink to="/manage/team" class="btn-primary">Manage People</NuxtLink>
+          </div>
         </div>
 
         <!-- Contact Page -->

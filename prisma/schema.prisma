@@ -19,27 +19,35 @@ model User {
 
 model HomeContent {
   id                    String @id @default(auto()) @map("_id") @db.ObjectId
-  heroTitle             String
-  heroSubtitle          String
+  // Multi-language text fields (JSON: {"en": "English", "th": "Thai"})
+  heroTitle             String // JSON string
+  heroSubtitle          String // JSON string
+  ctaText               String // JSON string
+  ctaButtonText         String // JSON string
+  featureTitle          String @default("{\"en\": \"Expert Management Solutions\", \"th\": \"โซลูชั่นการจัดการจากผู้เชี่ยวชาญ\"}") // JSON string
+  featureDescription    String @default("{\"en\": \"Streamline your business operations and enhance productivity\", \"th\": \"ปรับปรุงการดำเนินธุรกิจแลเพิ่มผลิตภาพ\"}") // JSON string
+  aboutTitle            String // JSON string
+  aboutDescription      String // JSON string
+  peopleTitle           String @default("{\"en\": \"Meet Our People\", \"th\": \"พบกับทีมงานของเรา\"}") // JSON string
+  peopleDescription     String @default("{\"en\": \"Get to know the talented individuals who drive our success\", \"th\": \"ทำความรู้จักกับบุคคลที่มีความสามารถผลักดันความสำเร็จ\"}") // JSON string
+  // Images (language-neutral)
   heroImage             String?
-  ctaText               String
-  ctaButtonText         String
-  aboutTitle            String
-  aboutDescription      String
+  featureImage          String?
   aboutImage            String?
-  peopleTitle           String @default("Meet Our People")
-  peopleDescription     String @default("Get to know the talented individuals who drive our success and make exceptional results possible")
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }
 
 model Service {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
+  // Multi-language text fields (JSON: {"en": "English", "th": "Thai"})
+  title       String // JSON string
+  description String // JSON string
+  // Features array - each feature has multi-language support
+  features    String @default("[]") // JSON string array of multi-language objects
+  // Language-neutral fields
   icon        String
   image       String?
-  features    String // JSON string
   color       String @default("#6495ed")
   isActive    Boolean @default(true)
   order       Int     @default(0)
@@ -48,18 +56,52 @@ model Service {
 }
 
 model AboutContent {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  // Multi-language text fields (JSON: {"en": "English", "th": "Thai"})
+  missionTitle      String // JSON string
+  missionText       String // JSON string
+  visionTitle       String // JSON string
+  visionText        String // JSON string
+  valuesTitle       String // JSON string
+  valuesText        String // JSON string
+  historyTitle      String // JSON string
+  historyText       String // JSON string
+  // Images (language-neutral)
+  missionImage      String?
+  heroImage         String?
+  // Statistics (JSON: {"en": "English", "th": "Thai"})
+  happyClientsCount String @default("{\"en\": \"500+\", \"th\": \"500+\"}")
+  happyClientsLabel String @default("{\"en\": \"Happy Clients\", \"th\": \"ลูกค้าที่พอใจ\"}")
+  experienceCount   String @default("{\"en\": \"10+\", \"th\": \"10+\"}")
+  experienceLabel   String @default("{\"en\": \"Years Experience\", \"th\": \"ปีประสบการณ์\"}")
+  // Vision Items (JSON array, each item has {"en": "English", "th": "Thai"})
+  visionItems       String @default("[]") // JSON string
+  // Values Items (JSON array, each item has title/description in both languages)
+  valuesItems       String @default("[]") // JSON string
+  // Journey Items (JSON array, each item has title/description in both languages)
+  journeyItems      String @default("[]") // JSON string
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ServicesContent {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
-  missionTitle    String
-  missionText     String
-  visionTitle     String
-  visionText      String
-  valuesTitle     String
-  valuesText      String
-  teamTitle       String
-  teamDescription String
-  historyTitle    String
-  historyText     String
-  bannerImage     String?
+  // Multi-language text fields (JSON: {"en": "English", "th": "Thai"})
+  heroTitle       String // JSON string
+  heroSubtitle    String // JSON string
+  // Images (language-neutral)
+  heroImage       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model TeamContent {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  // Multi-language text fields (JSON: {"en": "English", "th": "Thai"})
+  heroTitle       String // JSON string
+  heroSubtitle    String // JSON string
+  // Images (language-neutral)
+  heroImage       String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -81,14 +123,18 @@ model TeamMember {
 
 model ContactContent {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
-  title           String
-  subtitle        String
+  // Multi-language text fields (JSON: {"en": "English", "th": "Thai"})
+  title           String // JSON string
+  subtitle        String // JSON string
+  address         String // JSON string
+  // Contact info (language-neutral)
   phone           String
   email           String
-  address         String
-  businessHours   String // JSON string
+  businessHours   String // JSON string (already JSON format)
   mapEmbedUrl     String?
+  // Images (language-neutral)
   bannerImage     String?
+  heroImage       String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -110,6 +156,7 @@ model SiteSettings {
   logo            String?
   favicon         String?
   primaryColor    String @default("#6495ed")
+  secondaryColor  String @default("#9333ea")
   socialLinks     String // JSON string
   metaDescription String?
   keywords        String?

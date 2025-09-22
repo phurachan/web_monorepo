@@ -91,8 +91,30 @@
                 >
               </div>
             </div>
+            
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <input 
+                  v-model="form.secondaryColor" 
+                  type="color" 
+                  class="w-16 h-16 border-2 border-gray-300 rounded-lg cursor-pointer"
+                >
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Secondary Color</label>
+                <input 
+                  v-model="form.secondaryColor" 
+                  type="text" 
+                  placeholder="#9333ea" 
+                  class="form-input"
+                  pattern="^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+                >
+              </div>
+            </div>
+            
             <p class="text-sm text-gray-600">
-              This color will be used for buttons, links, and other brand elements across the site.
+              <strong>Primary:</strong> Used for buttons, links, and main brand elements.<br>
+              <strong>Secondary:</strong> Used for gradients and accent elements to create visual variety.
             </p>
           </div>
         </div>
@@ -223,6 +245,7 @@ const form = reactive({
   logo: '',
   favicon: '',
   primaryColor: '#6495ed',
+  secondaryColor: '#9333ea',
   metaDescription: '',
   keywords: '',
   contactEmail: '',
@@ -259,6 +282,7 @@ const loadContent = async () => {
       form.logo = response.logo || ''
       form.favicon = response.favicon || ''
       form.primaryColor = response.primaryColor || '#6495ed'
+      form.secondaryColor = response.secondaryColor || '#9333ea'
       form.metaDescription = response.metaDescription || ''
       form.keywords = response.keywords || ''
       form.contactEmail = response.contactEmail || ''

@@ -29,7 +29,8 @@ export default defineEventHandler(async (event) => {
           address: body.address,
           businessHours: body.businessHours || '{}',
           mapEmbedUrl: body.mapEmbedUrl || null,
-          bannerImage: body.bannerImage || null
+          bannerImage: body.bannerImage || null,
+          heroImage: body.heroImage || null
         }
       })
 
@@ -45,7 +46,8 @@ export default defineEventHandler(async (event) => {
           address: body.address,
           businessHours: body.businessHours || '{}',
           mapEmbedUrl: body.mapEmbedUrl || null,
-          bannerImage: body.bannerImage || null
+          bannerImage: body.bannerImage || null,
+          heroImage: body.heroImage || null
         }
       })
 

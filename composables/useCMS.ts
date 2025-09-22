@@ -78,6 +78,26 @@ export const useCMS = () => {
     }
   }
 
+  const getServicesContent = async () => {
+    try {
+      const data = await $fetch('/api/cms/services-content')
+      return data || getDefaultServicesContent()
+    } catch (error) {
+      console.error('Failed to fetch services content:', error)
+      return getDefaultServicesContent()
+    }
+  }
+
+  const getTeamContent = async () => {
+    try {
+      const data = await $fetch('/api/cms/team-content')
+      return data || getDefaultTeamContent()
+    } catch (error) {
+      console.error('Failed to fetch team content:', error)
+      return getDefaultTeamContent()
+    }
+  }
+
   return {
     getHomeContent,
     getServices,
@@ -85,7 +105,9 @@ export const useCMS = () => {
     getTeamMembers,
     getContactContent,
     getFAQs,
-    getSiteSettings
+    getSiteSettings,
+    getServicesContent,
+    getTeamContent
   }
 }
 
@@ -95,12 +117,43 @@ const getDefaultHomeContent = () => ({
   heroSubtitle: 'We craft innovative digital marketing solutions that drive growth, boost engagement, and transform your business for the digital age.',
   ctaText: 'Ready to Get Started?',
   ctaButtonText: 'Start Your Journey',
+  featureTitle: 'Expert Management Solutions',
+  featureDescription: 'Streamline your business operations and enhance productivity',
+  featureImage: null,
   aboutTitle: 'Why Choose Us?',
   aboutDescription: 'With over a decade of experience in digital marketing, we\'ve helped hundreds of businesses transform their online presence and achieve remarkable growth.',
   heroImage: null,
   aboutImage: null,
   peopleTitle: 'Meet Our People',
   peopleDescription: 'Get to know the talented individuals who drive our success and make exceptional results possible'
+})
+
+
+
+const getDefaultSiteSettings = () => ({
+  siteName: 'Digital Agency',
+  siteTagline: 'Elevating brands through innovative digital marketing solutions',
+  primaryColor: '#6495ed',
+  secondaryColor: '#9333ea',
+  socialLinks: JSON.stringify({
+    twitter: '#',
+    linkedin: '#',
+    facebook: '#'
+  }),
+  logo: null,
+  favicon: null
+})
+
+const getDefaultServicesContent = () => ({
+  heroTitle: 'Digital Marketing Services',
+  heroSubtitle: 'Transform your business with comprehensive digital marketing solutions that drive growth, increase visibility, and maximize your ROI.',
+  heroImage: null
+})
+
+const getDefaultTeamContent = () => ({
+  heroTitle: 'Meet Our People',
+  heroSubtitle: 'Get to know the talented individuals who drive our success and make exceptional results possible.',
+  heroImage: null
 })
 
 const getDefaultAboutContent = () => ({
@@ -110,11 +163,10 @@ const getDefaultAboutContent = () => ({
   visionText: 'To become the leading digital marketing agency that transforms businesses through innovative technology.',
   valuesTitle: 'Our Values',
   valuesText: 'Excellence, Transparency, Innovation - these core values guide everything we do.',
-  teamTitle: 'Meet Our Team',
-  teamDescription: 'Passionate experts dedicated to your success',
   historyTitle: 'Our Journey',
   historyText: 'From startup to industry leader, we\'ve been helping businesses grow since 2015.',
-  bannerImage: null
+  missionImage: null,
+  heroImage: null
 })
 
 const getDefaultContactContent = () => ({
@@ -128,18 +180,6 @@ const getDefaultContactContent = () => ({
     'Saturday': '10:00 AM - 4:00 PM',
     'Sunday': 'Closed'
   }),
-  bannerImage: null
-})
-
-const getDefaultSiteSettings = () => ({
-  siteName: 'Digital Agency',
-  siteTagline: 'Elevating brands through innovative digital marketing solutions',
-  primaryColor: '#6495ed',
-  socialLinks: JSON.stringify({
-    twitter: '#',
-    linkedin: '#',
-    facebook: '#'
-  }),
-  logo: null,
-  favicon: null
+  bannerImage: null,
+  heroImage: null
 })

@@ -28,11 +28,19 @@ export default defineEventHandler(async (event) => {
           visionText: body.visionText,
           valuesTitle: body.valuesTitle,
           valuesText: body.valuesText,
-          teamTitle: body.teamTitle,
-          teamDescription: body.teamDescription,
           historyTitle: body.historyTitle,
           historyText: body.historyText,
-          bannerImage: body.bannerImage || null
+          missionImage: body.missionImage || null,
+          heroImage: body.heroImage || null,
+          // Statistics
+          happyClientsCount: body.happyClientsCount || '500+',
+          happyClientsLabel: body.happyClientsLabel || 'Happy Clients',
+          experienceCount: body.experienceCount || '10+',
+          experienceLabel: body.experienceLabel || 'Years Experience',
+          // Dynamic arrays
+          visionItems: body.visionItems || '[]',
+          valuesItems: body.valuesItems || '[]',
+          journeyItems: body.journeyItems || '[]'
         }
       })
 
@@ -47,11 +55,19 @@ export default defineEventHandler(async (event) => {
           visionText: body.visionText,
           valuesTitle: body.valuesTitle,
           valuesText: body.valuesText,
-          teamTitle: body.teamTitle,
-          teamDescription: body.teamDescription,
           historyTitle: body.historyTitle,
           historyText: body.historyText,
-          bannerImage: body.bannerImage || null
+          missionImage: body.missionImage || null,
+          heroImage: body.heroImage || null,
+          // Statistics
+          happyClientsCount: body.happyClientsCount || '500+',
+          happyClientsLabel: body.happyClientsLabel || 'Happy Clients',
+          experienceCount: body.experienceCount || '10+',
+          experienceLabel: body.experienceLabel || 'Years Experience',
+          // Dynamic arrays
+          visionItems: body.visionItems || '[]',
+          valuesItems: body.valuesItems || '[]',
+          journeyItems: body.journeyItems || '[]'
         }
       })
 

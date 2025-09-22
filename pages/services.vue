@@ -21,11 +21,19 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="section-padding gradient-bg text-white" style="padding-top: 140px;">
-      <div class="container text-center">
-        <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ t('services.digitalMarketingServices') }}</h1>
+    <section 
+      class="section-padding text-white relative overflow-hidden" 
+      style="padding-top: 140px;"
+      :class="servicesContent.heroImage ? 'bg-cover bg-center bg-no-repeat' : 'bg-gradient-primary-to-secondary'"
+      :style="servicesContent.heroImage ? { backgroundImage: `url(${servicesContent.heroImage})` } : {}"
+    >
+      <!-- Overlay for better text readability when using background image -->
+      <div v-if="servicesContent.heroImage" class="absolute inset-0 bg-black/40"></div>
+      
+      <div class="container text-center relative z-10">
+        <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ servicesContent.heroTitle }}</h1>
         <p class="text-xl text-blue-100 max-w-3xl mx-auto">
-          {{ t('services.transformYourBusiness') }}
+          {{ servicesContent.heroSubtitle }}
         </p>
       </div>
     </section>
@@ -291,10 +299,11 @@
 </template>
 
 <script setup>
-// Load site settings from CMS
-const { getSiteSettings } = useCMS()
+// Load site settings and services content from CMS
+const { getSiteSettings, getServicesContent } = useCMS()
 const { t, initLanguage } = useI18n()
 const siteSettings = await getSiteSettings()
+const servicesContent = await getServicesContent()
 
 // Initialize language system
 onMounted(() => {

@@ -21,11 +21,19 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="section-padding gradient-bg text-white" style="padding-top: 140px;">
-      <div class="container text-center">
-        <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ t('team.meetPeople') }}</h1>
+    <section 
+      class="section-padding text-white relative overflow-hidden" 
+      style="padding-top: 140px;"
+      :class="teamContent.heroImage ? 'bg-cover bg-center bg-no-repeat' : 'bg-gradient-primary-to-secondary'"
+      :style="teamContent.heroImage ? { backgroundImage: `url(${teamContent.heroImage})` } : {}"
+    >
+      <!-- Overlay for better text readability when using background image -->
+      <div v-if="teamContent.heroImage" class="absolute inset-0 bg-black/40"></div>
+      
+      <div class="container text-center relative z-10">
+        <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ teamContent.heroTitle }}</h1>
         <p class="text-xl text-blue-100 max-w-3xl mx-auto">
-          {{ t('team.talentedTeam') }}
+          {{ teamContent.heroSubtitle }}
         </p>
       </div>
     </section>
@@ -50,7 +58,7 @@
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 >
               </div>
-              <div v-else class="aspect-square bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+              <div v-else class="aspect-square bg-gradient-to-br from-primary-very-light to-primary-light flex items-center justify-center">
                 <svg class="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
@@ -235,9 +243,10 @@
 <script setup>
 // Fetch team members and site settings from API
 const teamMembers = await $fetch('/api/cms/team')
-const { getSiteSettings } = useCMS()
+const { getSiteSettings, getTeamContent } = useCMS()
 const { t, initLanguage } = useI18n()
 const siteSettings = await getSiteSettings()
+const teamContent = await getTeamContent()
 const loading = ref(false)
 
 // Initialize language system

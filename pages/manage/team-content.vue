@@ -10,11 +10,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
               </svg>
             </NuxtLink>
-            <h1 class="text-xl font-semibold text-gray-900">Edit Contact Page</h1>
+            <h1 class="text-xl font-semibold text-gray-900">Edit Team Page Content</h1>
           </div>
           
           <div class="flex items-center space-x-4">
-            <NuxtLink to="/contact" target="_blank" class="btn-secondary">View Live</NuxtLink>
+            <NuxtLink to="/team" target="_blank" class="btn-secondary">View Live</NuxtLink>
             <button @click="handleLogout" class="btn-secondary">Logout</button>
           </div>
         </div>
@@ -57,132 +57,42 @@
 
       <!-- Form -->
       <form v-if="!loading" @submit.prevent="handleSubmit" class="space-y-8">
-        <!-- Banner Image -->
+        <!-- Hero Section -->
         <div class="card p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Banner Image</h2>
-          <ImageUpload 
-            v-model="formData.bannerImage" 
-            label="Contact Page Banner (optional)"
-          />
-        </div>
-
-        <!-- Hero Background Image -->
-        <div class="card p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Hero Background Image</h2>
-          <ImageUpload 
-            v-model="formData.heroImage" 
-            label="Hero Section Background (optional)"
-            help-text="Recommended: High-quality image, 1920x1080px or larger. Will be used as background for the hero section."
-          />
-        </div>
-
-        <!-- Page Content -->
-        <div class="card p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Page Content</h2>
+          <h2 class="text-xl font-bold text-gray-900 mb-6">Hero Section</h2>
           
           <div class="space-y-6">
             <div class="relative">
               <input 
-                v-model="formData.title[currentLanguage]" 
+                v-model="formData.heroTitle[currentLanguage]" 
                 type="text" 
                 placeholder=" " 
                 class="form-input peer"
                 required
               >
-              <label class="floating-label">Page Title ({{ currentLanguage.toUpperCase() }})</label>
+              <label class="floating-label">Hero Title ({{ currentLanguage.toUpperCase() }})</label>
             </div>
 
             <div class="relative">
               <textarea 
-                v-model="formData.subtitle[currentLanguage]" 
+                v-model="formData.heroSubtitle[currentLanguage]" 
                 placeholder=" " 
                 rows="3" 
                 class="form-input resize-none peer"
                 required
               ></textarea>
-              <label class="floating-label">Page Subtitle ({{ currentLanguage.toUpperCase() }})</label>
+              <label class="floating-label">Hero Subtitle ({{ currentLanguage.toUpperCase() }})</label>
             </div>
-          </div>
-        </div>
-
-        <!-- Contact Information -->
-        <div class="card p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Contact Information</h2>
-          
-          <div class="space-y-6">
-            <div class="relative">
-              <input 
-                v-model="formData.phone" 
-                type="tel" 
-                placeholder=" " 
-                class="form-input peer"
-                required
-              >
-              <label class="floating-label">Phone Number</label>
+            
+            <!-- Hero Background Image -->
+            <div>
+              <label class="form-label">Hero Background Image</label>
+              <ImageUpload 
+                v-model="formData.heroImage" 
+                label="Hero Section Background (optional)"
+                help-text="Recommended: High-quality image, 1920x1080px or larger. Will be used as background for the hero section."
+              />
             </div>
-
-            <div class="relative">
-              <input 
-                v-model="formData.email" 
-                type="email" 
-                placeholder=" " 
-                class="form-input peer"
-                required
-              >
-              <label class="floating-label">Email Address</label>
-            </div>
-
-            <div class="relative">
-              <textarea 
-                v-model="formData.address[currentLanguage]" 
-                placeholder=" " 
-                rows="3" 
-                class="form-input resize-none peer"
-                required
-              ></textarea>
-              <label class="floating-label">Physical Address ({{ currentLanguage.toUpperCase() }})</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Business Hours -->
-        <div class="card p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Business Hours</h2>
-          
-          <div class="space-y-4">
-            <div v-for="(hours, day) in businessHours" :key="day" class="flex items-center space-x-4">
-              <div class="w-24">
-                <label class="text-sm font-medium text-gray-700">{{ day }}</label>
-              </div>
-              <div class="flex-1">
-                <input 
-                  v-model="businessHours[day]" 
-                  type="text" 
-                  placeholder="e.g., 9:00 AM - 5:00 PM or Closed"
-                  class="form-input"
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Map Embed -->
-        <div class="card p-6">
-          <h2 class="text-xl font-bold text-gray-900 mb-6">Map Integration</h2>
-          
-          <div class="space-y-4">
-            <div class="relative">
-              <input 
-                v-model="form.mapEmbedUrl" 
-                type="url" 
-                placeholder=" " 
-                class="form-input peer"
-              >
-              <label class="floating-label">Google Maps Embed URL (optional)</label>
-            </div>
-            <p class="text-sm text-gray-600">
-              Go to Google Maps, search for your location, click "Share" → "Embed a map" and paste the src URL here.
-            </p>
           </div>
         </div>
 
@@ -237,26 +147,10 @@ const currentLanguage = ref('en')
 // Multi-language form data
 const formData = reactive({
   // Text fields as JSON {en: "English", th: "Thai"}
-  title: { en: '', th: '' },
-  subtitle: { en: '', th: '' },
-  address: { en: '', th: '' },
-  // Language-neutral fields
-  phone: '',
-  email: '',
-  mapEmbedUrl: '',
-  bannerImage: '',
+  heroTitle: { en: '', th: '' },
+  heroSubtitle: { en: '', th: '' },
+  // Images (language-neutral)
   heroImage: ''
-})
-
-// Business hours (separate reactive object for easier management)
-const businessHours = reactive({
-  'Monday': '',
-  'Tuesday': '',
-  'Wednesday': '',
-  'Thursday': '',
-  'Friday': '',
-  'Saturday': '',
-  'Sunday': ''
 })
 
 // Component state
@@ -282,30 +176,15 @@ const parseJsonField = (jsonString, fallback) => {
 
 const loadContent = async () => {
   try {
-    const response = await $fetch('/api/cms/contact-content')
+    const response = await $fetch('/api/cms/team-content')
     
     if (response) {
       // Parse multi-language text fields
-      formData.title = parseJsonField(response.title, { en: '', th: '' })
-      formData.subtitle = parseJsonField(response.subtitle, { en: '', th: '' })
-      formData.address = parseJsonField(response.address, { en: '', th: '' })
+      formData.heroTitle = parseJsonField(response.heroTitle, { en: '', th: '' })
+      formData.heroSubtitle = parseJsonField(response.heroSubtitle, { en: '', th: '' })
       
-      // Language-neutral fields
-      formData.phone = response.phone || ''
-      formData.email = response.email || ''
-      formData.mapEmbedUrl = response.mapEmbedUrl || ''
+      // Images (language-neutral)
       formData.heroImage = response.heroImage || ''
-      formData.bannerImage = response.bannerImage || ''
-      
-      // Parse business hours JSON
-      if (response.businessHours) {
-        try {
-          const hours = JSON.parse(response.businessHours)
-          Object.assign(businessHours, hours)
-        } catch (e) {
-          console.error('Failed to parse business hours:', e)
-        }
-      }
     }
   } catch (error) {
     errorMessage.value = 'Failed to load content'
@@ -322,26 +201,20 @@ const handleSubmit = async () => {
 
   try {
     // Prepare form data with JSON stringified multi-language fields
-    const payload = {
-      // Multi-language fields as JSON strings
-      title: JSON.stringify(formData.title),
-      subtitle: JSON.stringify(formData.subtitle),
-      address: JSON.stringify(formData.address),
-      // Language-neutral fields
-      phone: formData.phone,
-      email: formData.email,
-      mapEmbedUrl: formData.mapEmbedUrl,
-      heroImage: formData.heroImage,
-      bannerImage: formData.bannerImage,
-      businessHours: JSON.stringify(businessHours)
+    const submitData = {
+      // Text fields as JSON strings
+      heroTitle: JSON.stringify(formData.heroTitle),
+      heroSubtitle: JSON.stringify(formData.heroSubtitle),
+      // Images (language-neutral)
+      heroImage: formData.heroImage
     }
 
-    await $fetch('/api/cms/contact-content', {
+    await $fetch('/api/cms/team-content', {
       method: 'POST',
-      body: payload
+      body: submitData
     })
 
-    successMessage.value = 'Contact page content updated successfully!'
+    successMessage.value = 'Team page content updated successfully!'
   } catch (error) {
     errorMessage.value = 'Failed to update content. Please try again.'
     console.error('Failed to update content:', error)
@@ -366,7 +239,7 @@ watch([successMessage, errorMessage], () => {
 
 // SEO
 useSeoMeta({
-  title: `Edit Contact Page | ${siteSettings.siteName} CMS`,
+  title: `Edit Team Content | ${siteSettings.siteName} CMS`,
   robots: 'noindex, nofollow'
 })
 </script>

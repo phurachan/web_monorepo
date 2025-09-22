@@ -21,11 +21,19 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="pt-24 section-padding gradient-bg text-white">
-      <div class="container text-center">
-        <h1 class="text-4xl lg:text-5xl font-bold mb-6">Get In Touch</h1>
+    <section 
+      class="section-padding text-white relative overflow-hidden" 
+      style="padding-top: 140px;"
+      :class="contactContent.heroImage ? 'bg-cover bg-center bg-no-repeat' : 'bg-gradient-primary-to-secondary'"
+      :style="contactContent.heroImage ? { backgroundImage: `url(${contactContent.heroImage})` } : {}"
+    >
+      <!-- Overlay for better text readability when using background image -->
+      <div v-if="contactContent.heroImage" class="absolute inset-0 bg-black/40"></div>
+      
+      <div class="container text-center relative z-10">
+        <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ contactContent.title }}</h1>
         <p class="text-xl text-blue-100 max-w-3xl mx-auto">
-          Ready to transform your digital presence? Let's discuss how we can help accelerate your business growth.
+          {{ contactContent.subtitle }}
         </p>
       </div>
     </section>

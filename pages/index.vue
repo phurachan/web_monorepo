@@ -26,8 +26,18 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="section-padding gradient-bg text-white" style="padding-top: 140px;">
-      <div class="container">
+    <section 
+      id="home" 
+      class="section-padding text-white relative"
+      :class="homeContent.heroImage ? 'hero-with-image' : 'gradient-bg'"
+      :style="homeContent.heroImage ? {
+        backgroundImage: `url(${homeContent.heroImage})`,
+        paddingTop: '140px'
+      } : { paddingTop: '140px' }"
+    >
+      <!-- Dark overlay for better text readability when using background image -->
+      <div v-if="homeContent.heroImage" class="absolute inset-0 bg-black/50 z-0"></div>
+      <div class="container relative z-10">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
           <div class="fade-in-up">
             <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
@@ -45,16 +55,24 @@
               </NuxtLink>
             </div>
           </div>
-          <div class="relative">
-            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 transform hover:scale-105 transition-transform duration-300">
-              <div class="text-center">
-                <div class="w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+          <div class="relative max-w-md mx-auto">
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 md:p-8 transform hover:scale-105 transition-transform duration-300 max-h-96 overflow-hidden">
+              <div class="text-center max-w-xs mx-auto">
+                <!-- Feature Image or Icon -->
+                <div v-if="homeContent.featureImage" class="w-32 h-32 mx-auto mb-6 rounded-2xl overflow-hidden">
+                  <img 
+                    :src="homeContent.featureImage" 
+                    :alt="homeContent.featureTitle || t('home.lightningFast')"
+                    class="w-full h-full object-cover"
+                  >
+                </div>
+                <div v-else class="w-32 h-32 bg-gradient-primary-to-secondary rounded-full mx-auto mb-6 flex items-center justify-center">
                   <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                   </svg>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">{{ t('home.lightningFast') }}</h3>
-                <p class="text-blue-100">{{ t('home.accelerateTransformation') }}</p>
+                <h3 class="text-xl md:text-2xl font-bold mb-2 line-clamp-2">{{ homeContent.featureTitle || t('home.lightningFast') }}</h3>
+                <p class="text-blue-100 text-sm md:text-base line-clamp-3">{{ homeContent.featureDescription || t('home.accelerateTransformation') }}</p>
               </div>
             </div>
           </div>
@@ -178,7 +196,7 @@
           </div>
           
           <div class="relative">
-            <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 text-white">
+            <div class="bg-gradient-primary-to-secondary rounded-2xl p-8 text-white">
               <div class="grid grid-cols-2 gap-6 text-center">
                 <div>
                   <div class="text-3xl font-bold mb-2">500+</div>
@@ -235,7 +253,7 @@
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 >
               </div>
-              <div v-else class="aspect-square bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+              <div v-else class="aspect-square bg-gradient-to-br from-primary-very-light to-primary-light flex items-center justify-center">
                 <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>

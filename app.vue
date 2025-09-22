@@ -35,6 +35,11 @@ onMounted(async () => {
       // Generate shadow color with opacity
       const primaryShadow = hexToRgba(primaryColor, 0.2)
       root.style.setProperty('--primary-shadow', primaryShadow)
+      
+      // Set secondary color
+      if (siteSettings.secondaryColor) {
+        root.style.setProperty('--secondary-color', siteSettings.secondaryColor)
+      }
     }
   } catch (error) {
     console.error('Failed to load site settings for primary color:', error)
