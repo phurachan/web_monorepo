@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node copy-server-files.cjs && nuxt prepare && nuxt build",
     "dev": "nuxt dev",
-    "generate": "node copy-server-files.cjs && nuxt prepare && nuxt generate",
+    "generate": "node copy-server-files.cjs && nuxt prepare && nuxt build",
     "preview": "nuxt preview",
     "copy-server": "node copy-server-files.cjs"
   },

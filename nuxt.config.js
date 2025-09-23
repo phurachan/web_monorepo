@@ -18,6 +18,10 @@ export default defineNuxtConfig({
     preset: process.env.NUXT_ENV_VERCEL ? 'vercel' : undefined,
     experimental: {
       wasm: true
+    },
+    prerender: {
+      failOnError: false,
+      ignore: ['/local-spot']
     }
   },
   runtimeConfig: {
