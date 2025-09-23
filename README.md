@@ -1,79 +1,66 @@
-<!-- - Email: admin@digitalagency.com -->
-<!-- - Password: admin123 -->
-<!-- - Name: Admin User -->
+# Web Monorepo - Vercel Deployment
 
-# Nuxt Minimal Starter
+## Overview
+This monorepo combines two Nuxt layers:
+- **digital-agency**: Corporate website layer
+- **local-spot**: Admin dashboard layer
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Environment Variables Required
 
-## Setup
-
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+### Digital Agency Layer
+```
+AGENCY_MONGO_URI=mongodb+srv://...
+AGENCY_JWT_SECRET=your-secret-key
 ```
 
-## Development Server
+### Local Spot Layer
+```
+LOCAL_SPOT_MONGO_URI=mongodb+srv://...
+LOCAL_SPOT_JWT_SECRET=your-secret-key
+LOCAL_SPOT_JWT_EXPIRES_IN=7d
+```
 
-Start the development server on `http://localhost:3000`:
+## API Routes
 
+### Digital Agency CMS
+- `/api/agency-cms/auth/login`
+- `/api/agency-cms/auth/logout`
+- `/api/agency-cms/auth/me`
+- `/api/agency-cms/cms/*`
+
+### Local Spot Admin
+- `/api/local-spot/auth/login`
+- `/api/local-spot/auth/register`
+- `/api/local-spot/users/*`
+- `/api/local-spot/roles/*`
+- `/api/local-spot/permissions/*`
+
+## Deployment
+
+### Vercel
+1. Set environment variables in Vercel dashboard
+2. Deploy will automatically run `npm run build`
+3. Build process includes copying server files from both layers
+
+### Build Process
 ```bash
-# npm
+npm run build  # Copies server files and builds
+npm run generate  # For static generation
+```
+
+## Local Development
+```bash
+# Use Node.js 20 or higher
+nvm use 20
+npm install --legacy-peer-deps
+npm run copy-server  # Copy server files manually
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Features
+- ✅ Dual layer architecture
+- ✅ Environment variable isolation
+- ✅ API route separation
+- ✅ CSS merging from both layers
+- ✅ MongoDB integration for both layers
+- ✅ JWT authentication for both systems

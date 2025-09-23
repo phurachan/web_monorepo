@@ -1,9 +1,26 @@
 {
-  "buildCommand": "pnpm build",
-  "outputDirectory": ".output/public",
-  "framework": "nuxtjs",
+  "version": 2,
+  "builds": [
+    {
+      "src": "nuxt.config.ts",
+      "use": "@nuxtjs/vercel-builder",
+      "config": {
+        "serverFiles": ["server/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/agency-cms/(.*)",
+      "dest": "/api/agency-cms/$1"
+    },
+    {
+      "src": "/api/local-spot/(.*)",
+      "dest": "/api/local-spot/$1"
+    }
+  ],
   "env": {
-    "NUXT_PUBLIC_SITE_NAME": "Web Monorepo",
-    "NUXT_PUBLIC_SITE_URL": "https://web-admin-base.vercel.app"
-  }
+    "NUXT_ENV_VERCEL": "true"
+  },
+  "outputDirectory": ".output"
 }

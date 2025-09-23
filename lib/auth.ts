@@ -10,7 +10,7 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 }
 
 export function generateToken(userId: string, email: string): string {
-  const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key'
+  const jwtSecret = process.env.AGENCY_JWT_SECRET || 'fallback-secret-key'
   return jwt.sign(
     { userId, email },
     jwtSecret,
@@ -20,7 +20,7 @@ export function generateToken(userId: string, email: string): string {
 
 export function verifyToken(token: string): { userId: string; email: string } | null {
   try {
-    const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key'
+    const jwtSecret = process.env.AGENCY_JWT_SECRET || 'fallback-secret-key'
     const decoded = jwt.verify(token, jwtSecret) as any
     console.log('Token verified successfully for user:', decoded.email)
     return { userId: decoded.userId, email: decoded.email }

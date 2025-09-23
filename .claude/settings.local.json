@@ -1,18 +1,32 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx prisma:*)",
-      "Bash(node:*)",
       "Bash(rm:*)",
-      "Bash(pkill:*)",
-      "Bash(curl:*)",
-      "Bash(npm run dev:*)",
-      "Bash(tree:*)",
-      "Bash(npm uninstall:*)",
+      "Bash(yarn install)",
+      "Bash(node:*)",
+      "Bash(yarn info:*)",
+      "Bash(nvm use:*)",
+      "Bash(nvm install:*)",
+      "Bash(yarn --version)",
       "Bash(npm install:*)",
-      "Bash(npm run typecheck:*)",
-      "Bash(npm run build:*)"
+      "Bash(hash -r)",
+      "Bash(npx yarn install:*)",
+      "Bash(bash:*)",
+      "Bash(. ~/.nvm/nvm.sh)",
+      "Bash(yarn import)",
+      "Read(//Users/phurachanphowutthirat/repositories/claude/**)",
+      "Bash(npm run generate:*)",
+      "Bash(ln:*)",
+      "Bash(yarn generate)",
+      "Bash(yarn cache:*)",
+      "Bash(nvm alias:*)",
+      "Bash(find:*)",
+      "Bash(npx nuxt generate:*)",
+      "Bash(npm run copy-server:*)",
+      "Bash(npm run dev:*)",
+      "Bash(nvm:*)"
     ],
-    "deny": []
+    "deny": [],
+    "ask": []
   }
 }
