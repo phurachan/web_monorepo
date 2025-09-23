@@ -1,13 +1,25 @@
+# Nuxt dev/build outputs
+.claude
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
 node_modules
-.output/nitro.json
-.output/public/_nuxt/builds/latest.json
-.output/public/_nuxt/builds/meta/cfa266d4-de45-42f7-b77b-7cf3e38b0e89.json
-.output/public/_nuxt/builds/meta/f0a14202-1cf4-4b71-ab09-b1e18f7a44fa.json
-.output/server/chunks/nitro/nitro.mjs
-.nuxt/nuxt.d.ts
-.nuxt/tsconfig.json
-.nuxt/manifest/latest.json
-.nuxt/manifest/meta/cfa266d4-de45-42f7-b77b-7cf3e38b0e89.json
-.nuxt/manifest/meta/f0a14202-1cf4-4b71-ab09-b1e18f7a44fa.json
-.nuxt/tailwind/postcss.mjs
-.claude/settings.local.json
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example

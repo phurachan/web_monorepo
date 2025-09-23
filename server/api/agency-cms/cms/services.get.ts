@@ -5,10 +5,8 @@ export default defineEventHandler(async (event) => {
     const services = await ServiceService.getAllServices()
 
     return services.map(service => {
-      console.log('Processing service:', service.title, 'features type:', typeof service.features, 'value:', service.features)
       try {
         const parsedFeatures = JSON.parse(service.features || '[]')
-        console.log('Parsed features:', parsedFeatures)
         return {
           ...service,
           id: service._id.toString(),

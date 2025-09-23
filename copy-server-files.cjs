@@ -78,17 +78,26 @@ function copyDirectorySync(src, dest, layerType = null) {
         continue;
       }
 
-      // Read file content
-      let content = fs.readFileSync(srcPath, 'utf8');
+      // Check if it's a binary file (images, etc.)
+      const isBinaryFile = /\.(png|jpg|jpeg|gif|webp|svg|ico|pdf|zip|tar|gz|mp4|mp3|woff|woff2|ttf|eot)$/i.test(entry.name);
 
-      // Replace environment variables if it's a TypeScript/JavaScript file
-      if (layerType && (entry.name.endsWith('.ts') || entry.name.endsWith('.js'))) {
-        content = replaceEnvVariables(content, layerType);
+      if (isBinaryFile) {
+        // Copy binary files without encoding
+        fs.copyFileSync(srcPath, destPath);
+        console.log(`Copied (binary): ${srcPath} -> ${destPath}`);
+      } else {
+        // Read text file content
+        let content = fs.readFileSync(srcPath, 'utf8');
+
+        // Replace environment variables if it's a TypeScript/JavaScript file
+        if (layerType && (entry.name.endsWith('.ts') || entry.name.endsWith('.js'))) {
+          content = replaceEnvVariables(content, layerType);
+        }
+
+        // Write updated content
+        fs.writeFileSync(destPath, content, 'utf8');
+        console.log(`Copied (text): ${srcPath} -> ${destPath}`);
       }
-
-      // Write updated content
-      fs.writeFileSync(destPath, content, 'utf8');
-      console.log(`Copied: ${srcPath} -> ${destPath}`);
     }
   }
 }
@@ -107,6 +116,7 @@ function main() {
   const targetPublic = './public';
 
   console.log('Copying files from layers...');
+  console.log('Note: Skipping composables and components (Nuxt auto-imports from layers)');
 
   // Copy from digital-agency with env variable replacement
   if (fs.existsSync(digitalAgencyServer)) {
@@ -151,6 +161,7 @@ function main() {
   }
 
   console.log('All files copied successfully!');
+  console.log('\nSkipped copying: composables, components (auto-imported by Nuxt layers)');
   console.log('\nEnvironment variable replacements applied:');
   console.log('Digital Agency: MONGO_URI -> AGENCY_MONGO_URI, JWT_SECRET -> AGENCY_JWT_SECRET');
   console.log('Local Spot: MONGO_URI -> LOCAL_SPOT_MONGO_URI, JWT_SECRET -> LOCAL_SPOT_JWT_SECRET, JWT_EXPIRES_IN -> LOCAL_SPOT_JWT_EXPIRES_IN');
