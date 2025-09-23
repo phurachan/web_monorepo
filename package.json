@@ -3,11 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node copy-server-files.cjs && nuxt build",
+    "build": "node copy-server-files.cjs && nuxt prepare && nuxt build",
     "dev": "nuxt dev",
-    "generate": "node copy-server-files.cjs && nuxt generate",
+    "generate": "node copy-server-files.cjs && nuxt prepare && nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
     "copy-server": "node copy-server-files.cjs"
   },
   "dependencies": {

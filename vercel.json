@@ -9,18 +9,7 @@
       }
     }
   ],
-  "routes": [
-    {
-      "src": "/api/agency-cms/(.*)",
-      "dest": "/api/agency-cms/$1"
-    },
-    {
-      "src": "/api/local-spot/(.*)",
-      "dest": "/api/local-spot/$1"
-    }
-  ],
   "env": {
     "NUXT_ENV_VERCEL": "true"
-  },
-  "outputDirectory": ".output"
+  }
 }
